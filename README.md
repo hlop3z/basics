@@ -8,7 +8,7 @@
 
 # Clone
 ```
-git clone https://github.com/hlop3z/vuenicfy
+git clone https://github.com/hlop3z/basics
 ```
 
 # New File (optional way)
@@ -24,7 +24,7 @@ cmd  = lambda x: subprocess.run(x, check=True, shell=True)
 
 def new_project(name):
     app_name = name.lower().replace('-','_').strip()
-    cmd(f'git clone https://github.com/hlop3z/vuenicfy')
+    cmd(f'git clone https://github.com/hlop3z/basics')
 
     EXAMPLE_FILE = f"""
 import sys
@@ -45,31 +45,31 @@ print( { app_name }.__plugins__ )
     """.strip()
 
     try:
-        shutil.rmtree("vuenicfy/.git")
-        shutil.rmtree("vuenicfy/tests")
-        shutil.rmtree("vuenicfy/examples")
-        shutil.rmtree("vuenicfy/dist")
-        shutil.rmtree("vuenicfy/vuenicfy.egg-info")
-        os.remove("vuenicfy/project.py")
+        shutil.rmtree("basics/.git")
+        shutil.rmtree("basics/tests")
+        shutil.rmtree("basics/examples")
+        shutil.rmtree("basics/dist")
+        shutil.rmtree("basics/basics.egg-info")
+        os.remove("basics/project.py")
     except Exception as e:
         pass
 
 
-    os.mkdir('vuenicfy/examples')
-    os.mkdir('vuenicfy/tests')
+    os.mkdir('basics/examples')
+    os.mkdir('basics/tests')
 
-    with open("vuenicfy/examples/example.py", "w") as f:
+    with open("basics/examples/example.py", "w") as f:
         f.write( EXAMPLE_FILE )
         f.close()
 
-    shutil.move("vuenicfy/vuenicfy", f"vuenicfy/{ app_name }")
-    shutil.move("vuenicfy", app_name)
+    shutil.move("basics/basics", f"basics/{ app_name }")
+    shutil.move("basics", app_name)
 
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('project', nargs=1, help='''Clone Github "hlop3z/vuenicfy" for a new project''')
+    parser.add_argument('project', nargs=1, help='''Clone Github "hlop3z/basics" for a new project''')
     args = parser.parse_args()
 
     if args.project: new_project( args.project[0] )
