@@ -6,12 +6,12 @@
 * Vuex
 * Vuetify
 
-# Clone
+# Clone (Option: 1)
 ```
 git clone https://github.com/hlop3z/basics
 ```
 
-# New File (optional way)
+# New File (Option: 2)
 ```
 nano project.py
 ```
