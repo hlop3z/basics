@@ -74,3 +74,8 @@ print(
         query   = { "id": { "eq" : 9 } }
     )
 )
+
+#LITE CREATE    - tx.execute( *active.data )
+#LITE ROW       - tx.fetchrow( *active.data )
+#LITE READ      - tx.fetch( *active.data )
+#LITE DELETE    - tx.execute( *active.data )
