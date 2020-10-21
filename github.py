@@ -9,6 +9,7 @@ with open('CONFIG.json') as f:
 cmd = lambda x: subprocess.run(x, check=True, shell=True)
 
 
+print(  f"""{ CONFIG['organization'] }/{ PROJECT.name }"""  )
 
 def setup_origin( path=f"""{ CONFIG['organization'] }/{ PROJECT.name }""" ):
     try:
