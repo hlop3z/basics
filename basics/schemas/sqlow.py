@@ -111,7 +111,6 @@ def pagination(page=None, size=None):
 class Sqlow:
     def __init__(self, table=None, pk="id", sqlite=False):
         self.table  = table
-        self.pk     = pk
         self.sqlite = sqlite
 
     def find(self, query={}, fields=['*'], sort_by=None, page=None):
@@ -123,7 +122,7 @@ class Sqlow:
         return                     ( f"{ queryText };", (*args,) )
 
     def create(self, form={}):
-        pgkeys = lambda: ",".join( [f"${ i+1 }" for i,k in enumerate(form.keys())] )
+        pgkeys = lambda: ",".join( [f"${ i+1 }" for i,k in enumerate( form.keys() )] )
         ltkeys = lambda: ",".join( ["?" for k in form.keys()] )
         queryText = lambda ks: f'''INSERT INTO { self.table }({ ",".join( form.keys() ) }) VALUES ({ ks })'''
         if not self.sqlite: return (f"{ queryText( pgkeys() ) } RETURNING *;", *form.values())

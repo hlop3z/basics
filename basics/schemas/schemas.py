@@ -90,6 +90,7 @@ def get_field_info(fields):
 
 
 
+@register_plugin
 class Schema:
     def __init__(self, **kwargs):
         self.schema    = kwargs

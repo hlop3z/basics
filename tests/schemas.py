@@ -75,12 +75,12 @@ print(
     )
 )
 
-#LITE CREATE    - tx.execute( *active.data )
-#LITE ROW       - tx.fetchone( *active.data )
-#LITE READ      - tx.fetch( *active.data )
-#LITE DELETE    - tx.execute( *active.data )
+#LITE CREATE  - tx.execute( *active.data )
+#LITE ROW     - tx.fetchone( *active.data )
+#LITE READ    - tx.fetchall( *active.data )
+#LITE DELETE  - tx.execute( *active.data )
 
 #PG CREATE    - tx.fetchval( *active.data )
 #PG ROW       - tx.fetchrow( *active.data )
-#PG READ      - tx.fetchall( *active.data )
+#PG READ      - tx.fetch( *active.data )
 #PG DELETE    - tx.execute( *active.data )

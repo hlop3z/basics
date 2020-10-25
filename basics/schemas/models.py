@@ -5,57 +5,45 @@ from .schemas import Schema
 from .sqlow import Sqlow
 
 PLUGINS  = dict()
-RESPONSE = namedtuple('Models', ['error', 'data', 'method'])
+RESPONSE = namedtuple('Model', ['error', 'data', 'method'])
+
+@register_plugin
+def group(*plugins, prefix=None):
+    for p in plugins:
+        if not p.name in PLUGINS: PLUGINS[ p.name ] = p
+        else                    : raise Exception(f'''Model: < { p.name } > is Already Registered!''')
+    return PLUGINS
+
 
 class Model:
-    def __init__(self, name=None, schema=None, pk=None, sqlite=False):
+    def __init__(self, name=None, schema=None, sqlite=False):
         self.name      = name
         self.form      = Schema( **schema )
-        self.sql       = Sqlow( name, pk = pk, sqlite = sqlite )
+        self.sql       = Sqlow( name, sqlite = sqlite )
+        self.tx        = None
 
-        def create( form=None ):
-            create = self.form.create( form )
-            if not create.error: return RESPONSE(False, self.sql.create( create.data ), 'sql-create')
-            return create
+    def create( self, form=None ):
+        create = self.form.create( form )
+        if not create.error: return RESPONSE(False, self.sql.create( create.data ), 'sql-insert')
+        return create
 
-        def update( form=None, query=None ):
-            update = self.form.update( form )
-            if not update.error: return RESPONSE(False, self.sql.update( update.data, query ), 'sql-update')
-            return update
+    def update( self, form=None, query=None ):
+        update = self.form.update( form )
+        if not update.error: return RESPONSE(False, self.sql.update( update.data, query ), 'sql-update')
+        return update
 
-        def find( query={}, fields=['*'], sort_by=None, page=None ):
-            return RESPONSE(False, self.sql.find( query, fields, sort_by, page ), 'sql-where')
+    def find( self, query={}, fields=['*'], sort_by=None, page=None ):
+        print( self.sql.find( query, fields, sort_by, page ) )
+        return RESPONSE(False, self.sql.find( query, fields, sort_by, page ), 'sql-where')
 
-        def delete( query=None ):
-            return RESPONSE(False, self.sql.delete( query ), 'sql-delete')
-
-        self.route( create )
-        self.route( update )
-        self.route( delete )
-        self.route( find )
+    def delete( self, query=None ):
+        return RESPONSE(False, self.sql.delete( query ), 'sql-delete')
 
 
-
-    def route(cls, function):
-        # Set-Name
-        bp_name = f'''{ cls.name.lower() }'''
-        name    = function.__name__
-        # Set-SchemaBase
-        if not bp_name in PLUGINS: PLUGINS[ bp_name ] = { "info": cls.form.meta._asdict() }
-        # Register Function
-        if name in PLUGINS[ bp_name ]: raise Exception(f'''Function: < { name } > inside Schema: < { bp_name } > is Already Registered!''')
-        else                         : PLUGINS[ bp_name ][ name ] = function
 
 
 @register_plugin
-class Models:
-    def __init__(self, schemas=[], sqlite=False):
-        for s in schemas: s['sqlite'] = sqlite
-        self.models = set()
-        for s in schemas:
-            Model( **s )
-            self.models.add( s['name'] )
-        self.models= list( self.models )
+def PostgresModel(name=None, schema=None): return Model(name=name, schema=schema, sqlite=False)
 
-    @property
-    def model(self): return PLUGINS
+@register_plugin
+def SqliteModel(name=None, schema=None)  : return Model(name=name, schema=schema, sqlite=True)
