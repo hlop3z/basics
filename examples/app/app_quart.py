@@ -1,7 +1,3 @@
-from quart import Quart, websocket, request
-
-app = Quart('test_quart')
-
 import basics
 
 import users
@@ -10,6 +6,11 @@ Models      = basics.schemas.group( users.schema )
 Blueprints  = basics.blueprints.crud_group( users.blueprint )
 #Database    = basics.sanic.Postgres(user = 'username', password = 'password', database = 'mewb', host = '127.0.0.1', port = 5432)
 Database    = basics.sanic.Sqlite('database_test.db')
+
+
+from quart import Quart, websocket, request
+
+app = Quart('api_db_quart')
 
 api_handler = Database.handler( blueprints=Blueprints, models=Models )
 
