@@ -130,12 +130,12 @@ class Sqlow:
 
     def update(self, form=None, query=None):
         _query, args = make_sql_update(form = form, query = query, sqlite = self.sqlite)
-        queryText = f'UPDATE { self.table } { _query };'
-        if not self.sqlite: return ( queryText, *args )
-        return                     ( queryText, (*args,) )
+        queryText = f'UPDATE { self.table } { _query }'
+        if not self.sqlite: return ( f"{ queryText } RETURNING *;", *args )
+        return                     ( f"{ queryText };", (*args,) )
 
     def delete(self, query=None):
         _query, args = make_sql_where(query = query, sqlite = self.sqlite)
-        queryText = f'DELETE FROM { self.table } { _query };'
-        if not self.sqlite: return ( queryText, *args )
-        return                     ( queryText, (*args,) )
+        queryText = f'DELETE FROM { self.table } { _query }'
+        if not self.sqlite: return ( f"{ queryText } RETURNING *;", *args )
+        return                     ( f"{ queryText };", (*args,) )

@@ -1,5 +1,4 @@
 import setuptools, json, pathlib, os
-from . import manager
 
 """
 [USAGE]:
@@ -16,6 +15,7 @@ from . import manager
 PROJECT             = pathlib.Path(__file__).resolve().parents[0]
 GET_DATA_FILES      = lambda folder: "\n".join( [ f"""include { x[0].replace(f'{ str(PROJECT) }/','') }/*""" for x in os.walk( f"{ PROJECT }/{ folder }" ) ] )
 
+
 MANIFEST_TEXT = f"""
 include README.md
 include LICENSE.txt
@@ -23,13 +23,17 @@ include CONFIG.json
 include requirements.txt
 
 { GET_DATA_FILES('data') }
+{ GET_DATA_FILES('readme') }
 { GET_DATA_FILES('docs') }
 { GET_DATA_FILES('static') }
 { GET_DATA_FILES('views') }
 """.strip()
 
-
+# Comment Before "setup.py dist"
+"""
+import manager
 manager.set_modules_init()
+"""
 
 with open("CONFIG.json", "r") as f:
     CONFIG = json.load(f)

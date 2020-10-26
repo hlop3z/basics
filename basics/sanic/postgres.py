@@ -1,10 +1,28 @@
 import functools
-import asyncpg
 import collections
+import asyncpg
 
 RESPONSE = collections.namedtuple('Postgres', ['error', 'data', 'method'])
 
 from . import register_plugin
+
+class PostgresHandler:
+    def __init__(self, Blueprints=None, Models=None):
+        async def handler(app, payload):
+            # Handler
+            if 'model' in payload:
+                async def Handler(models): return await Blueprints[ payload['url'] ]( payload['model'], models, payload['data'] )
+            else:
+                async def Handler(models): return await Blueprints[ payload['url'] ]( models, payload['data'] )
+            # Real Handler
+            answer  = await app.postgres( Handler, models = Models )()
+            if not answer.error : output = answer.data._asdict()
+            else                : output = answer._asdict()
+            return output
+
+        self.handler = handler
+
+
 
 @register_plugin
 class Postgres:
@@ -24,7 +42,7 @@ class Postgres:
             port      = self.port
         )
 
-        def postgres_tx( function, payload={}, models=None ):
+        def postgres_tx( function, models=None ):
             @functools.wraps( function )
             async def wrapper_decorator(*args, **kwargs):
                 async with pool.acquire() as connection:
@@ -46,39 +64,43 @@ class Postgres:
 
                                     async def update( self, form=None, query=None ):
                                         sql = self.model.update(form = form, query = query)
-                                        if not sql.error: return RESPONSE(False, await self.tx.execute( *sql.data ), 'model-update')
+                                        if not sql.error: return RESPONSE(False, [ dict(r) for r in await self.tx.fetch( *sql.data ) ], 'model-update')
                                         return sql
 
                                     async def get( self, query={}, fields=['*'] ):
                                         sql = self.model.find(query = query, fields = fields, sort_by = None, page = None)
-                                        if not sql.error: return RESPONSE(False, dict( await self.tx.fetchrow( *sql.data ) ), 'model-get')
+                                        data = await self.tx.fetchrow( *sql.data )
+                                        if not sql.error: return RESPONSE(False, dict( data ) if data else {}, 'model-get')
                                         return sql
 
                                     async def find( self, query={}, fields=['*'], sort_by=None, page=None ):
                                         sql = self.model.find(query = query, fields = fields, sort_by = sort_by, page = page)
-                                        if not sql.error: return RESPONSE(False, [ dict(r) for r in await self.tx.fetch( *sql.data ) ], 'model-find')
+                                        if not sql.error: return RESPONSE(False, [ dict(r) for r in  await self.tx.fetch( *sql.data ) ], 'model-find')
                                         return sql
-
 
                                     async def delete( self, query=None ):
                                         sql = self.model.delete( query = query )
-                                        if not sql.error: return RESPONSE(False, await self.tx.execute( *sql.data ), 'model-delete')
+                                        if not sql.error: return RESPONSE(False, [ dict(r) for r in await self.tx.fetch( *sql.data ) ], 'model-delete')
                                         return sql
 
 
                                 # Register Models to Transaction
                                 if models:
                                     MODELS = { k: PostgresModel(connection, model) for k, model in models.items() }
-                                    response = await function(MODELS, payload, *args, **kwargs)
+                                    response = await function(MODELS, *args, **kwargs)
                                 else:
-                                    response = await function(connection, payload, *args, **kwargs)
+                                    response = await function(connection, *args, **kwargs)
                                 return RESPONSE(False, response, 'postgres-transaction')
 
                         # AsyncPG Ignore exception
                         except Exception as e:
-                            return RESPONSE(True, e, 'postgres-transaction')
+                            return RESPONSE(True, e.args[0], 'postgres-transaction')
             return wrapper_decorator
 
 
         # Register - Postgres Transaction's Wrapper
         app.postgres = postgres_tx
+
+
+    def handler(self, blueprints=None, models=None):
+        return PostgresHandler(Blueprints=blueprints, Models=models).handler

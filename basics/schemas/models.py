@@ -33,7 +33,6 @@ class Model:
         return update
 
     def find( self, query={}, fields=['*'], sort_by=None, page=None ):
-        print( self.sql.find( query, fields, sort_by, page ) )
         return RESPONSE(False, self.sql.find( query, fields, sort_by, page ), 'sql-where')
 
     def delete( self, query=None ):
@@ -43,7 +42,7 @@ class Model:
 
 
 @register_plugin
-def PostgresModel(name=None, schema=None): return Model(name=name, schema=schema, sqlite=False)
+def Postgres(name=None, schema=None): return Model(name=name, schema=schema, sqlite=False)
 
 @register_plugin
-def SqliteModel(name=None, schema=None)  : return Model(name=name, schema=schema, sqlite=True)
+def Sqlite(name=None, schema=None)  : return Model(name=name, schema=schema, sqlite=True)

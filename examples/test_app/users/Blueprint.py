@@ -1,19 +1,15 @@
-import sys
-
-sys.path.append('../')
-
 from basics import blueprints
 
-name    = 'wallets'
-wallets = blueprints.Blueprint( name )
+name = 'users'
+blueprint = blueprints.Blueprint( name )
 
-@wallets.route
+@blueprint.route
 async def create(model, payload):
     db = await model[ name ].create( payload )
     return db
 
 
-@wallets.route
+@blueprint.route
 async def list(model, payload):
     #await models['users'].find({ "id" : { "eq" : 1 } })
     page = payload[ "page" ]

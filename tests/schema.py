@@ -2,20 +2,37 @@ import sys
 
 sys.path.append('../')
 
-from basics.schemas import PostgresModel, Field, easy_regex
+from basics.schemas import Field, easy_regex
+from basics.schemas import Sqlite as Model #Postgres or Sqlite
 
-_isPass     = lambda size: """^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\\\?\/\|!@#\$%\^&\*><,\."'])(?=.{"""+ str( size ) +""",})"""
-isPass      = _isPass( 8 ) # AT LEAST ONE OF EACH (a-z, A-Z, 0-9) and AT LEAST ONE OF ( . , \ / < > ? ! @ # $ % ^ & * | )
-isUsername  = easy_regex('a-z0-9_', 2)
-isPhone     = '^\+?(\d.*){6,}$'
+
+Users = Model(
+    name   = "users",
+    schema = {
+        "name" : None,
+        "dob"  : Field( rules=[ (lambda v: "x" not in str(v)) ], required=False  ),
+})
+
+
+
+
+
+
 
 import hashlib, time
 
-def hash_password( value ):
+def hash_password(value):
     return hashlib.blake2s( value.encode('utf-8'), digest_size=8 ).hexdigest()
 
-Wallets = PostgresModel(
-    name   = "wallets",
+_isPass     = lambda v: """^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\\\?\/\|!@#\$%\^&\*><,\."'])(?=.{"""+str(v)+""",})"""
+isPass      = _isPass(8) # AT LEAST ONE OF EACH (a-z, A-Z, 0-9) and AT LEAST ONE OF ( . , \ / < > ? ! @ # $ % ^ & * | )
+isUsername  = easy_regex('a-z0-9_', 2)
+isPhone     = '^\+?(\d.*){6,}$'
+
+
+
+Users2 = Model(
+    name   = "users",
     schema = {
         "id"        : Field( required=False  ),
         "group"     : Field( None, choices=['customers', 'admins', 'employees', 'partners', 'investors'] ),

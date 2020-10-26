@@ -10,9 +10,11 @@ def group(*plugins, prefix=None):
     for p in plugins:
         if prefix:
             for key,value in p.PLUGINS.items(): PLUGINS[ f'{ prefix }/{ key }' ] = value
-        else: PLUGINS.update( p.PLUGINS )
+        else:
+            PLUGINS.update( p.PLUGINS )
         p.PLUGINS.clear()
     return PLUGINS
+
 
 @register_plugin
 class Blueprint:

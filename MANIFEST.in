@@ -1,8 +1,11 @@
 include README.md
 include LICENSE.txt
 include CONFIG.json
+include requirements.txt
 
-include docs/*
+include data/*
+include readme/*
+
 include static/*
 include static/vendors/*
 include static/vendors/vuetify/*
@@ -10,6 +13,3 @@ include static/vendors/avue/*
 include static/vendors/material/*
 include static/vendors/material/css/*
 include static/vendors/material/fonts/*
-include static/apps/*
-include static/core/*
-include views/*
