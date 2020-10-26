@@ -1,4 +1,4 @@
-# Cookie-Cutter Web-Framework
+# SQL - Operators
 * eq
 * !eq
 * bt
