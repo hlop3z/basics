@@ -17,10 +17,16 @@ Database    = basics.sanic.Sqlite('test.db')
 from sanic import Sanic
 from sanic import response
 
-app = Sanic("hello_example")
+app = Sanic("api_db_sanic")
 
+"""
+from sanic_cors import CORS
+CORS(app, automatic_options=True, supports_credentials=True)
 
-api_info    = basics.blueprints.info( blueprints=Blueprints, models=Models )
+from sanic_compress import Compress
+Compress( app )
+"""
+
 api_handler = Database.handler( blueprints=Blueprints, models=Models )
 app.register_listener(Database.setup, 'before_server_start')
 

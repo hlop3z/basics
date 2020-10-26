@@ -14,7 +14,6 @@ from sanic import response
 app = Sanic("hello_example")
 
 
-api_info    = basics.blueprints.info( blueprints=Blueprints, models=Models )
 api_handler = Database.handler( blueprints=Blueprints, models=Models )
 app.register_listener(Database.setup, 'before_server_start')
 

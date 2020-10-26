@@ -23,6 +23,10 @@ basics/schemas/schemas.py
 basics/schemas/sqlow.py
 data/backend.db
 data/frontend.db
+readme/App_Quart.md
+readme/App_Sanic.md
+readme/CRUD_Blueprint.md
+readme/CRUD_Models.md
 readme/CRUD_Operators.md
 readme/SQL_Operators.md
 static/vendors/avue/axios.min.map
