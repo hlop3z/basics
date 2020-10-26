@@ -20,9 +20,9 @@ def easy_regex(letters='a-zA-Z0-9', min_size=0):
 
 @register_plugin
 def Field(value=None , **kwargs):
-    fixed    = False
     auto     = False
     required = True
+    fixed    = False
     rules    = []
     regex    = []
     filters  = []
@@ -33,8 +33,8 @@ def Field(value=None , **kwargs):
     if 'required' in kwargs : required = kwargs['required']
     if 'fixed'    in kwargs : fixed    = kwargs['fixed']
     if 'rules'    in kwargs : rules    = kwargs['rules']
-    if 'filters'  in kwargs : filters  = kwargs['filters']
     if 'regex'    in kwargs : regex    = kwargs['regex']
+    if 'filters'  in kwargs : filters  = kwargs['filters']
     if 'choices'  in kwargs : choices  = kwargs['choices']
     if 'method'   in kwargs : method   = kwargs['method']
 

@@ -6,6 +6,11 @@ PLUGINS  = dict()
 RESPONSE = namedtuple('Blueprints', ['error', 'data', 'method'])
 
 @register_plugin
+def response(name):
+    return namedtuple( name.title() , ['error', 'data', 'method'] )
+
+
+@register_plugin
 def group(*plugins, prefix=None):
     for p in plugins:
         if prefix:

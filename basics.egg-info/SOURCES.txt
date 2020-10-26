@@ -13,7 +13,6 @@ basics/__demo__/plugin.py
 basics/blueprints/__init__.py
 basics/blueprints/blueprints.py
 basics/blueprints/crud.py
-basics/blueprints/information.py
 basics/sanic/__init__.py
 basics/sanic/example.py
 basics/sanic/postgres.py
@@ -24,6 +23,8 @@ basics/schemas/schemas.py
 basics/schemas/sqlow.py
 data/backend.db
 data/frontend.db
+readme/CRUD_Operators.md
+readme/SQL_Operators.md
 static/vendors/avue/axios.min.map
 static/vendors/avue/vue_bundle.js
 static/vendors/material/README.md

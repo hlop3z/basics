@@ -1,11 +1,17 @@
+# README(s) -> **Files**
+* CRUD_Blueprint
+* CRUD_Models
+
+# App - Example
+```
 import basics
 
 import users
 
 Models      = basics.schemas.group( users.schema )
 Blueprints  = basics.blueprints.crud_group( users.blueprint )
+Database    = basics.sanic.Sqlite('test.db')
 #Database    = basics.sanic.Postgres(user = 'username', password = 'password', database = 'mewb', host = '127.0.0.1', port = 5432)
-Database    = basics.sanic.Sqlite('database_test.db')
 
 
 from sanic import Sanic
@@ -37,3 +43,4 @@ async def info(request):
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=8085)
+```
