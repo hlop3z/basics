@@ -6,7 +6,7 @@
 ```
 from quart import Quart, websocket, request
 
-app = Quart('api_db')
+app = Quart('api_db_quart')
 
 import basics
 
