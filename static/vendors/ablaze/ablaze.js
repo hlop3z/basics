@@ -271,6 +271,8 @@ const AblazeVuex = ({ store=null, name=null }={}) => new __AblazeVuex__(name, st
 
 const AblazeVue = {}
 AblazeVue.install = function (Vue, options) {
+  console.log( ' i worked' )
+
   var $globals    = AblazeVuex({ name: "globals"   , store: options.store });
   var $components = AblazeVuex({ name: "components", store: options.store });
   var $forms      = AblazeVuex({ name: "forms"     , store: options.store });
@@ -283,7 +285,22 @@ AblazeVue.install = function (Vue, options) {
 
   Vue.mixin({
     filters: $ablaze.vue.filters,
+
+    mounted(){
+      console.log( 'I worked' )
+    },
+
     computed:{
+
+      $globals: {
+        get: function () {
+          return $globals.value;
+        },
+        set: function (value) {
+          $globals.value = value;
+        }
+      },
+
       $payloads: {
         get: function () {
           return $payloads.value;
@@ -292,6 +309,8 @@ AblazeVue.install = function (Vue, options) {
           $payloads.value = value;
         }
       }
+
+
     },
   })
 

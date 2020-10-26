@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="/@= static =@/vendors/material/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="/@= static =@/vendors/vuetify/vuetify.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="app">
+
+    <v-app>
+      <v-main>
+        <v-container>
+
+
+			<template>
+			  <v-container>
+			    <v-row>
+
+
+
+			      <v-col
+			        cols="12"
+			      >
+			      	<h1>@= static =@</h1>
+			      	{{ store.$globals }}
+
+			      	<h2>
+			      		Geneon Accounting
+						<v-icon color='black'>mdi-spray</v-icon>
+			      	</h2>
+			      </v-col>
+
+
+
+
+			    </v-row>
+			  </v-container>
+			</template>
+
+        </v-container>
+      </v-main>
+
+
+    </v-app>
+  </div>
+
+  <script src="/@= static =@/vendors/ablaze/ablaze.js"></script>
+  <script src="/@= static =@/vendors/ablaze/records.js"></script>
+
+  <script src="/@= static =@/vendors/avue/vue_bundle.js"></script>
+  <script src="/@= static =@/vendors/vuetify/vuetify.min.js"></script>
+
+  <script>
+    const store  = new Vuex.Store({ state: () => ( @= vuex =@ ) })
+    //Vue.use( AblazeVue, { store:store } );
+
+
+    new Vue({
+      store,
+      el: '#app',
+      vuetify: new Vuetify(),
+		mounted(){
+			console.log( 'I worked' )
+		},
+
+
+    })
+  </script>
+
+</body>
+
+</html>
+
