@@ -86,3 +86,8 @@ if __name__ == '__main__':
 ```
 python3.7 project.py myapp
 ```
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
