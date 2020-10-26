@@ -1,5 +1,5 @@
 # Cookie-Cutter Web-Framework
-* Sanic
+* Sanic or Quart
 * Jinja2
 * Axios
 * Vue
