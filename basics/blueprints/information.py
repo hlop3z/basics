@@ -6,36 +6,6 @@ def info(models=None, blueprints=None):
     "models" : models.keys(),
     "urls"   : blueprints.keys(),
     "info"   : { k:v.form.meta._asdict() for k,v in models.items() },
-    "query"  : """
-#EQUAL
-'eq'   : value,
-#NOT EQUAL
-'!eq'  : value,
-#BETWEEN
-'bt'   : (low, high)
-#NOT BETWEEN
-'!bt'  : (low, high)
-#BETWEEN - EQUAL THAN
-'be'   : (low, high)
-#NOT BETWEEN - EQUAL THAN
-'!be'  : (low, high)
-#IN
-'in'   : [ list ]
-#NOT IN
-'!in'  : [ list ]
-#MATCH STRING PATTERN
-'like' : pattern
-# NOT MATCH STRING PATTERN
-'!like': pattern
-#GREATER THAN
-'gt'   : value
-#GREATER OR EQUAL THAN
-'ge'   : value
-#LESS THAN
-'lt'   : value
-#LESS OR EQUAL THAN
-'le'   : value
-    """.strip(),
 
     "crud"   : {
     #Create
