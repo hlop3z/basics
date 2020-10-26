@@ -4,22 +4,46 @@
 
 ## EQUAL
 ```
-'eq'   : value,
+{ 'eq' : value }
+```
+
+## NOT EQUAL
+```
+{ '!eq' : value }
+```
+
+## BETWEEN
+```
+{ 'bt' : (low, high) }
+```
+
+## NOT BETWEEN
+```
+{ '!bt' : (low, high) }
+```
+
+## BETWEEN - EQUAL THAN
+```
+{ 'be' : (low, high) }
+```
+
+## NOT BETWEEN - EQUAL THAN
+```
+{ '!be' : (low, high) }
+```
+
+## A
+```
+```
+## A
+```
+```
+## A
+```
 ```
 
 # New File ( Option: 2 )
 ```
-#
-#NOT EQUAL
-'!eq'  : value,
-#BETWEEN
-'bt'   : (low, high)
-#NOT BETWEEN
-'!bt'  : (low, high)
-#BETWEEN - EQUAL THAN
-'be'   : (low, high)
-#NOT BETWEEN - EQUAL THAN
-'!be'  : (low, high)
 #IN
 'in'   : [ list ]
 #NOT IN
