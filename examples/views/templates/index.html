@@ -1,0 +1,56 @@
+@@ extends "base.html" @@
+
+@@ block head @@
+@@ endblock @@
+
+@@ block scripts @@
+@@ endblock @@
+
+@@ block mixin @@
+<script>
+  mixin={
+  }
+</script>
+@@ endblock @@
+
+@@ block body @@
+
+<v-app id="inspire">
+  <v-app-bar
+    app
+    color="indigo"
+    dark
+  >
+    <v-app-bar-nav-icon @click.stop="go('appstore/sample')"></v-app-bar-nav-icon>
+    <v-toolbar-title>Applications</v-toolbar-title>
+
+    <v-icon>mdi-abjad-arabic</v-icon>
+  </v-app-bar>
+
+  <v-main>
+    <v-container
+      class="overflow-y-auto"
+      :style="{ maxHeight: ((screen.height-110) + 'px') }"
+      fluid
+    >
+      <v-row
+        justify="center"
+      >
+        <v-col class="text" cols="12">
+
+          Hello
+
+        </v-col>
+      </v-row>
+
+    </v-container>
+  </v-main>
+  <v-footer
+    color="indigo"
+    app
+  >
+    <span class="white--text">&copy; {{ new Date().getFullYear() }}</span>
+  </v-footer>
+</v-app>
+
+@@ endblock @@
