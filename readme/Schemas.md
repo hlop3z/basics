@@ -1,4 +1,4 @@
-# SQL - Operators
+# CRUD - Operators
 * Create
 * Read - One
 * Read - All
