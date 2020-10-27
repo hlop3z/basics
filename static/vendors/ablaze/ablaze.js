@@ -289,16 +289,20 @@ AblazeVue.install = function (Vue, options) {
       name   : String,
       url    : String,
       crud   : String,
-      form   : Object,
     },
     data: () => ({
       valid: false
     }),
+    computed:{
+      form(){ return this.forms[ this.name ].form }
+    },
+    mounted() {
+      //do something after mounting vue instance
+      console.log( this.form );
+    },
     methods: {
       sendToServer () {
         console.log( "Sent to Server!" );
-        const field = $ablaze.field.int.negative
-        console.log( field('10') );
       },
       submit () {
         var vm = this;
@@ -314,6 +318,6 @@ AblazeVue.install = function (Vue, options) {
         this.$refs[ this.name ].resetValidation()
       },
     },
-    template: `<v-form :ref="name" v-model="valid"> <slot v-bind:submit="submit" v-bind:reset="reset" v-bind:clean="clean"></slot>  </v-form>`,
+    template: `<v-form :ref="name" v-model="valid"> <slot v-bind:submit="submit" v-bind:reset="reset" v-bind:clean="clean" v-bind:form="form"></slot>  </v-form>`,
   })
 }

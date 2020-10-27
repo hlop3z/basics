@@ -34,21 +34,21 @@
               </p>
               <test-click></test-click>
               <p>
-                {{ forms.users.form.name }}
+                {{ forms }}
               </p>
               <api-form
-                name="globals"
+                name="users"
                 crud="create"
                 url="/json"
                 cors
-                v-slot="{ submit, clear, reset }"
+                v-slot="{ submit, clear, reset, form }"
               >
                 <v-text-field
                   v-model="forms.users.form.name"
                   label="Globals"
                   append-icon="mdi-plus"
                   @click:append="submit"
-                  @input="nameHandler"
+                  @input="$nextTick(() => { form.name = $ablaze.field.currency( form.name ) })"
                   :rules="[
                     v => !!v || 'Primary-Key is required',
                   ]"
