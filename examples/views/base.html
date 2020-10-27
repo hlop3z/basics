@@ -31,11 +31,9 @@
 
   <script>
     Vue.mixin( mixin )
-
-    const $http  = axios.create({ withCredentials: false })
-    const $httpc = axios.create({ withCredentials: true })
-    Vue.prototype.$http  = $http;
-    Vue.prototype.$httpc = $httpc;
+    Vue.prototype.$http = {};
+    Vue.prototype.$http.api  = axios.create({ withCredentials: false });
+    Vue.prototype.$http.cors = axios.create({ withCredentials: true });
 
     Vue.mixin({
     })

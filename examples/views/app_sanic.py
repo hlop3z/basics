@@ -36,4 +36,4 @@ async def app_root(request, path=''):
     return payload
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8085)
+    app.run(host='0.0.0.0', port=8084)

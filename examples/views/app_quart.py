@@ -9,14 +9,26 @@ PATH    = pathlib.Path(__file__).resolve().parents[0]
 app = Quart('frontend_quart')
 
 
-VUEX_SETUP = json.dumps({
-    "globals"       : [ "project", "user", "role" ],
+VUEX_SETUP = {
+    "globals"       : { "project": 'ablaze' },
     "components"    : [  ],
-    "forms"         : [  ],
     "views"         : [  ],
     "roles"         : [  ],
-    "screen"        : {'width':0, 'height':0},    
-})
+    "screen"        : {'width':0, 'height':0},
+    "forms"         : {
+        "users":{ "form": { "name": None } }
+    },
+    "api"           : {
+        "core": 'http://0.0.0.0:8085'
+    },
+}
+
+TEMPLATE_SETUP = {
+    "base"   : "base_sanic.html",
+    "static" : "__static__",
+    "vuex"   : json.dumps( VUEX_SETUP ),
+}
+
 
 @app.route("/")
 async def app_root():
@@ -25,14 +37,9 @@ async def app_root():
         block_start_string='@@', block_end_string='@@',
         variable_start_string='@=', variable_end_string='=@'
     )
-
-    TEMPLATE_FILE = "templates/index.html"
-    template  = templateEnv.get_template( TEMPLATE_FILE )
-    BASE_HTML = template.render(
-        base   = "base_sanic.html",
-        static = "__static__",
-        vuex   = VUEX_SETUP,
-    )
+    template_file = "templates/index.html"
+    template  = templateEnv.get_template( template_file )
+    BASE_HTML = template.render( **TEMPLATE_SETUP )
     return BASE_HTML
 
 
@@ -46,4 +53,4 @@ async def app_send_from_file( path ):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8085)
+    app.run(host='0.0.0.0', port=8084)

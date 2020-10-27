@@ -188,18 +188,22 @@ $ablaze.field.hashtags=function(e){return[...new Set(e.toLowerCase().replace(/((
 $ablaze.field.attags=function(e){return[...new Set(e.toLowerCase().replace(/((?!([a-z0-9_@\s])).)/g,"").replace(/_{1,}/g,"_").replace(/@{1,}/g,"@").replace(/^\d+$/,"").split(" "))].filter(e=>{return e.startsWith("@")}).map(e=>{return e.replace("@","")})}
 $ablaze.field.attags.dot=function(e){return[...new Set(e.toLowerCase().replace(/((?!([a-z0-9_\.@\s])).)/g,"").replace(/_{1,}/g,"_").replace(/\.{1,}/g,".").replace(/_\.{0,}/g,"_").replace(/\._{0,}/g,".").replace(/@{1,}/g,"@").replace(/^\d+$/,"").split(" "))].filter(e=>{return e.startsWith("@")}).map(e=>{return e.replace("@","")})}
 
-$ablaze.field.int=function(e){return((e=(e=(e=e.split(".")[0]).replace(/((?!(^[-?]|[0-9])).)/g,"")).replace(/^[0]/,"")),(e=parseInt(e).toString()).replace(/^-0/,"-"))}
-$ablaze.field.int.positive=function(e){return(e=(e=String(e)).replace(/^0/,"")).replace(/((?!([0-9])).)/g,"")};
-$ablaze.field.int.negative=function(e){return((e=String(e)).length>0&&(e=(e=(e=e.replace(/^/,"-")).replace(/-{1,}/,"-")).replace(/^-0{1,}/,"-")),1==e.length&&(e=e.replace(/-/,"")),e.replace(/((?!(^[-?]|[0-9])).)/g,""))}
+$ablaze.field.int=function(e){e=e.replace(/((?!(^[-?]|[0-9])).)/g, ""); return e }
+$ablaze.field.int.positive=function(e){(e=String( $ablaze.field.int(e)) ); e=e.replace(/((?!([0-9])).)/g, ""); return e };
+$ablaze.field.int.negative=function(e){(e=String( $ablaze.field.int(e)) ); (e=(e.length>0) ? `-${ e }` : e); e=e.replace(/((?!(^[-?]|[0-9])).)/g, ""); return e };
 $ablaze.field.number=function(field,decimal){l=String(String(field).split(".")[1]).length;if(l&&!decimal){decimal=l} return $ablaze.number.float(field,decimal)}
 $ablaze.field.float = function(field, decimal = 4) {
   return $ablaze.number.float(field, decimal).value;
 };
 $ablaze.field.currency = function(field) {
-  return $ablaze.field.number(field, 2);
+  var n = field.split('.')
+  if(n.length>1){
+    return `${ $ablaze.field.int( n[0] ) }.${ $ablaze.filter.cut($ablaze.field.int( n[1] ), 2, false) }`;
+  }
+    return `${ $ablaze.field.int( n[0] ) }`;
 };
 $ablaze.field.money = function(field) {
-  return $ablaze.field.number(field, 2);
+  return $ablaze.field.currency(field);
 };
 $ablaze.field.list = function(field, size = 10) {
   return field
@@ -232,86 +236,52 @@ $ablaze.vue.filters = {
   //calc_time_ms  : function (value) { return calc_time_since(value) },
 }
 
-const DynamicVuex={
-  namespaced:!0,
-  state(){return{ value:null }},
-  mutations:{setValue(state,value){ state.value=value } },
-  actions:{value:function(context,value){ context.commit("setValue",value) }},
-  getters:{value(state){ return state.value }},
-}
-class __AblazeVuex__ {
-    constructor(name, store) {
-      var model = `abz-${ name }`;
-      this.name  = model;
-      this.store = store;
-      store.registerModule(`${ model }`, DynamicVuex);
-      store.dispatch(`${ model }/value`, [])
-    }
-    get val(){
-        return this.store.getters[`${ this.name }/value`]
-    }
-    set val(value){
-        this.store.dispatch(`${ this.name }/value`, value)
-    }
-    get value(){
-        return this.val
-    }
-    set value(value){
-        this.val = value
-    }
-    get state(){
-        return this.val
-    }
-    set state(value){
-        this.val = value
-    }
-}
-
-const AblazeVuex = ({ store=null, name=null }={}) => new __AblazeVuex__(name, store);
-
 const AblazeVue = {}
 AblazeVue.install = function (Vue, options) {
-  console.log( ' i worked' )
 
-  var $globals    = AblazeVuex({ name: "globals"   , store: options.store });
-  var $components = AblazeVuex({ name: "components", store: options.store });
-  var $forms      = AblazeVuex({ name: "forms"     , store: options.store });
-  var $views      = AblazeVuex({ name: "views"     , store: options.store });
-  var $roles      = AblazeVuex({ name: "roles"     , store: options.store });
-  var $screen     = AblazeVuex({ name: "screen"    , store: options.store });
-  var $payloads   = AblazeVuex({ name: "payloads"  , store: options.store });
+  const AblazeVuex={
+    namespaced:!0,
+    state(){return{ value:null }},
+    mutations:{setValue(state,value){ state.value=value } },
+    actions:{value:function(context,value){ context.commit("setValue",value) }},
+    getters:{value(state){ return state.value }},
+  }
+  const DynamicVuex = function(key, value) {
+    const model  = `abz-${ key }`;
+    options.store.registerModule(`${ model }`, AblazeVuex);
+    options.store.dispatch(`${ model }/value`, value)
+    return {
+        get: function () {
+          return options.store.getters[`${ model }/value`]
+        },
+        set: function (value) {
+          options.store.dispatch(`${ model }/value`, value)
+        }
+    }
+  }
 
+
+  var GLOBAL_KEY_VALUE = {};
+  Object.keys( options.config ).forEach(key=>{
+      GLOBAL_KEY_VALUE[ key ] = DynamicVuex(key, options.config[ key ]);
+  })
+
+
+  Vue.prototype.$ablaze = $ablaze;
   Vue.prototype.$timestamp = () => Math.round(new Date().getTime() / 1000);
 
   Vue.mixin({
-    filters: $ablaze.vue.filters,
+    filters : $ablaze.vue.filters,
+    computed: GLOBAL_KEY_VALUE,
+  })
 
-    mounted(){
-      console.log( 'I worked' )
-    },
 
-    computed:{
-
-      $globals: {
-        get: function () {
-          return $globals.value;
-        },
-        set: function (value) {
-          $globals.value = value;
-        }
+  Vue.component('test-click', {
+    methods: {
+      clean () {
       },
-
-      $payloads: {
-        get: function () {
-          return $payloads.value;
-        },
-        set: function (value) {
-          $payloads.value = value;
-        }
-      }
-
-
     },
+    template: `<h1 @click="globals.project='hlop3z'"> Click Me </h1>`,
   })
 
   Vue.component('api-form', {
@@ -320,40 +290,28 @@ AblazeVue.install = function (Vue, options) {
       url    : String,
       crud   : String,
       form   : Object,
-      perms: {
-        type: Boolean,
-        default:false
-      },
-      valid: {
-        type: Boolean,
-        default:true
-      },
     },
+    data: () => ({
+      valid: false
+    }),
     methods: {
+      sendToServer () {
+        console.log( "Sent to Server!" );
+        const field = $ablaze.field.int.negative
+        console.log( field('10') );
+      },
       submit () {
         var vm = this;
-        var api;
         this.$refs[ this.name ].validate();
-        if(this.perms){ api = this.$httpc }else{ api = this.$http }
-        if(this.url && this.valid){
-          api.post(this.url, { crud:this.crud, data:this.form })
-          .then(r=>{
-            const data = { url: vm.url, crud: vm.crud, status: true, data: r.data, code: r.status, timestamp: vm.$timestamp() }
-            vm.$payloads.push( data );
-          }).catch(e=>{
-            const data = { url: vm.url, crud: vm.crud, status: false, data: e.response.statusText, code: e.response.status, timestamp: vm.$timestamp() }
-            vm.$payloads.push( data );
-          })
-        }else{ null }
-        this.$emit('update:valid', this.valid);
+        if( this.valid ){
+          this.sendToServer();
+        }
       },
       reset () {
         this.$refs[ this.name ].reset()
-        this.$emit('update:valid', this.valid);
       },
       clean () {
         this.$refs[ this.name ].resetValidation()
-        this.$emit('update:valid', this.valid);
       },
     },
     template: `<v-form :ref="name" v-model="valid"> <slot v-bind:submit="submit" v-bind:reset="reset" v-bind:clean="clean"></slot>  </v-form>`,

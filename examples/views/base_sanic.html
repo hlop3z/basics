@@ -27,13 +27,35 @@
 			      <v-col
 			        cols="12"
 			      >
-			      	<h1>@= static =@</h1>
-			      	{{ store.$globals }}
+              {{ globals }}
+              {{ globals.project | cut(1) }}
+              <p>
+                {{ api }}
+              </p>
+              <test-click></test-click>
+              <p>
+                {{ forms.users.form.name }}
+              </p>
+              <api-form
+                name="globals"
+                crud="create"
+                url="/json"
+                cors
+                v-slot="{ submit, clear, reset }"
+              >
+                <v-text-field
+                  v-model="forms.users.form.name"
+                  label="Globals"
+                  append-icon="mdi-plus"
+                  @click:append="submit"
+                  @input="nameHandler"
+                  :rules="[
+                    v => !!v || 'Primary-Key is required',
+                  ]"
+                >
+                </v-text-field>
+              </api-form>
 
-			      	<h2>
-			      		Geneon Accounting
-						<v-icon color='black'>mdi-spray</v-icon>
-			      	</h2>
 			      </v-col>
 
 
@@ -57,23 +79,32 @@
   <script src="/@= static =@/vendors/vuetify/vuetify.min.js"></script>
 
   <script>
-    const store  = new Vuex.Store({ state: () => ( @= vuex =@ ) })
-    //Vue.use( AblazeVue, { store:store } );
+    const store   = new Vuex.Store({ state: () => ({  }) });
+    const config  = @= vuex =@;
 
+    Vue.prototype.$http = {};
+    Vue.prototype.$http.api  = axios.create({ withCredentials: false });
+    Vue.prototype.$http.cors = axios.create({ withCredentials: true });
 
+    Vue.use( AblazeVue, { store, config } );
     new Vue({
       store,
       el: '#app',
       vuetify: new Vuetify(),
-		mounted(){
-			console.log( 'I worked' )
-		},
-
-
+      data: () => ({
+      }),
+      mounted(){
+  		},
+      methods: {
+        nameHandler(){
+          this.$nextTick(() => {
+            this.forms.users.form.name = $ablaze.field.currency( this.forms.users.form.name )
+          });
+        }
+      },
     })
   </script>
 
 </body>
 
 </html>
-
