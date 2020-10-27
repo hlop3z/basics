@@ -14,9 +14,10 @@ VUEX_SETUP = {
     "components"    : [  ],
     "views"         : [  ],
     "roles"         : [  ],
+    "testwindow"    : 0,
     "screen"        : {'width':0, 'height':0},
     "forms"         : {
-        "users":{ "form": { "name": None } }
+        "users":{ "name": None }
     },
     "api"           : {
         "core": 'http://0.0.0.0:8085'

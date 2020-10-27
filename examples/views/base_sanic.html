@@ -7,76 +7,44 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="/@= static =@/vendors/material/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="/@= static =@/vendors/vuetify/vuetify.min.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/@= static =@/favicon.ico">
+  @@ block head @@ @@ endblock @@
 
 </head>
 
-<body>
-  <div id="app">
-
-    <v-app>
-      <v-main>
-        <v-container>
+<body style="overflow-y: hidden; overflow-x: hidden;">
 
 
-			<template>
-			  <v-container>
-			    <v-row>
+  <div id="app" v-resize="onResize"> <the-app></the-app> </div>
 
-
-
-			      <v-col
-			        cols="12"
-			      >
-              {{ globals }}
-              {{ globals.project | cut(1) }}
-              <p>
-                {{ api }}
-              </p>
-              <test-click></test-click>
-              <p>
-                {{ forms }}
-              </p>
-              <api-form
-                name="users"
-                crud="create"
-                url="/json"
-                cors
-                v-slot="{ submit, clear, reset, form }"
-              >
-                <v-text-field
-                  v-model="forms.users.form.name"
-                  label="Globals"
-                  append-icon="mdi-plus"
-                  @click:append="submit"
-                  @input="$nextTick(() => { form.name = $ablaze.field.currency( form.name ) })"
-                  :rules="[
-                    v => !!v || 'Primary-Key is required',
-                  ]"
-                >
-                </v-text-field>
-              </api-form>
-
-			      </v-col>
-
-
-
-
-			    </v-row>
-			  </v-container>
-			</template>
-
-        </v-container>
-      </v-main>
-
-
-    </v-app>
-  </div>
+    
 
   <script src="/@= static =@/vendors/ablaze/ablaze.js"></script>
   <script src="/@= static =@/vendors/ablaze/records.js"></script>
 
   <script src="/@= static =@/vendors/avue/vue_bundle.js"></script>
   <script src="/@= static =@/vendors/vuetify/vuetify.min.js"></script>
+
+
+
+  @@ block scripts @@ @@ endblock @@
+  @@ block mixin @@ @@ endblock @@
+  <script type="text/javascript">
+    Vue.component('the-app', {
+      props:{
+      },
+      data: () => ({
+      }),
+      computed:{
+      },
+      mounted() {
+      },
+      methods: {
+      },
+      template: `<@@ block body @@ @@ endblock @@`,
+    });
+  </script>
+
 
   <script>
     const store   = new Vuex.Store({ state: () => ({  }) });
@@ -87,6 +55,8 @@
     Vue.prototype.$http.cors = axios.create({ withCredentials: true });
 
     Vue.use( AblazeVue, { store, config } );
+
+
     new Vue({
       store,
       el: '#app',
@@ -96,11 +66,13 @@
       mounted(){
   		},
       methods: {
-        nameHandler(){
-          this.$nextTick(() => {
-            this.forms.users.form.name = $ablaze.field.currency( this.forms.users.form.name )
-          });
-        }
+        onScroll (e) {
+          this.testwindow = e.target.scrollTop;
+          console.log( e.target.scrollTop );
+        },        
+        onResize () {
+          this.screen = { width: window.innerWidth, height: window.innerHeight };
+        },        
       },
     })
   </script>

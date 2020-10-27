@@ -1,55 +1,98 @@
 @@ extends base @@
 
+
 @@ block head @@
 @@ endblock @@
 
 @@ block scripts @@
+<script>
+  console.log( 'Scripts - Hello' )
+</script>
 @@ endblock @@
 
 @@ block mixin @@
 <script>
-  mixin={
-  }
+  console.log( 'Mixin - Hello' )
 </script>
 @@ endblock @@
 
+
 @@ block body @@
+  <v-app> 
 
-<v-app id="inspire">
-  <v-app-bar
-    app
-    color="indigo"
-    dark
-  >
-    <v-app-bar-nav-icon @click.stop="go('appstore/sample')"></v-app-bar-nav-icon>
-    <v-toolbar-title>Applications</v-toolbar-title>
 
-    <v-icon>mdi-abjad-arabic</v-icon>
-  </v-app-bar>
+      <v-main>
+        <v-container
+          fluid
+          v-scroll.self="(e)=>( testwindow = e.target.scrollTop )"
+          class="overflow-y-auto"
+          :style="{  maxHeight: ( (screen.height - 5) + 'px' )  }"
+        >
 
-  <v-main>
-    <v-container
-      class="overflow-y-auto"
-      :style="{ maxHeight: ((screen.height-110) + 'px') }"
-      fluid
-    >
-      <v-row
-        justify="center"
-      >
-        <v-col class="text" cols="12">
 
-          Hello
-        </v-col>
-      </v-row>
+          <v-row>
 
-    </v-container>
-  </v-main>
-  <v-footer
-    color="indigo"
-    app
-  >
-    <span class="white--text">&copy; {{ new Date().getFullYear() }}</span>
-  </v-footer>
-</v-app>
+            <v-col
+              cols="12"
+            >
+              {{ globals }}
+              {{ globals.project | cut(1) }}
+              <p>
+                {{ testwindow }}
+              </p>
+              <p>
+                {{ api }}
+              </p>
 
+              <test-click></test-click>
+              
+
+
+              <p>
+                {{ forms }}
+              </p>
+              {{ screen }}
+
+              <api-form
+                name="users"
+                crud="create"
+                url="/json"
+                cors
+                v-slot="{ form, submit, clean, reset }"
+              >
+
+                <v-text-field
+                  v-model="form.name"
+                  label="Globals"
+                  append-icon="mdi-plus"
+                  @click:append="reset"
+                  @input="$nextTick(() => { form.name = $ablaze.field.username( form.name ) })"
+                  :rules="[
+                    v => !!v || 'Primary-Key is required',
+                  ]"
+                >
+                </v-text-field>
+
+              <v-btn @click="submit" depressed color="success">
+                submit
+              </v-btn>
+              <v-btn @click="reset" depressed color="info">
+                reset
+              </v-btn>
+              <v-btn @click="clean" depressed color="warning">
+                clean
+              </v-btn>
+              </api-form>
+
+            </v-col>
+
+          </v-row>
+
+
+        </v-container>
+      </v-main>
+
+
+
+  </v-app>
 @@ endblock @@

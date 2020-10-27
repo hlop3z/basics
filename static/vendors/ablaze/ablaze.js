@@ -289,21 +289,36 @@ AblazeVue.install = function (Vue, options) {
       name   : String,
       url    : String,
       crud   : String,
+      cors   : {
+        type   : Boolean,
+        default: false
+      },
     },
     data: () => ({
-      valid: false
+      valid: false,
+      default_form: {}
     }),
     computed:{
-      form(){ return this.forms[ this.name ].form }
+      form:{
+        get: function () {
+          return this.forms[ this.name ]
+        },
+        set: function (value) {
+          this.forms[ this.name ] = value
+        }        
+      },
     },
     mounted() {
-      //do something after mounting vue instance
-      console.log( this.form );
+      this.default_form = JSON.parse(JSON.stringify( this.form ));
     },
     methods: {
       sendToServer () {
         console.log( "Sent to Server!" );
+        this.resetDefaults();
       },
+      resetDefaults () {
+        this.form = JSON.parse(JSON.stringify( this.default_form ));
+      },      
       submit () {
         var vm = this;
         this.$refs[ this.name ].validate();
@@ -312,10 +327,11 @@ AblazeVue.install = function (Vue, options) {
         }
       },
       reset () {
-        this.$refs[ this.name ].reset()
+        this.$refs[ this.name ].resetValidation()
       },
       clean () {
-        this.$refs[ this.name ].resetValidation()
+        //this.$refs[ this.name ].reset()
+        this.resetDefaults();
       },
     },
     template: `<v-form :ref="name" v-model="valid"> <slot v-bind:submit="submit" v-bind:reset="reset" v-bind:clean="clean" v-bind:form="form"></slot>  </v-form>`,
