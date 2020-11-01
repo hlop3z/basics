@@ -1,0 +1,39 @@
+<template>
+  <api-form
+    name="users"
+    crud="create"
+    url="/json"
+    cors
+  v-slot="{ form, submit, clean, reset }">
+
+    <v-text-field v-model="form.name" label="Globals"
+    append-icon="mdi-plus"
+    @click:append="reset"
+    @input="$nextTick(() => { form.name = $ablaze.field.username( form.name ) })"
+    :rules="[
+        v => !!v || 'Primary-Key is required',
+    ]"></v-text-field>
+
+    <v-btn @click="submit" depressed color="success">
+      submit
+    </v-btn>
+    <v-btn @click="reset" depressed color="info">
+      reset
+    </v-btn>
+    <v-btn @click="clean" depressed color="warning">
+      clean
+    </v-btn>
+
+  </api-form>
+</template>
+
+<script>
+  export default {
+    data: () => ({
+      name: "testing"
+    }),
+    computed: {},
+    mounted() {},
+    methods: {},
+  }
+</script>

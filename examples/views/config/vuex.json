@@ -1,0 +1,13 @@
+{
+  "api"           : {
+      "core": "http://0.0.0.0:8085"
+  },
+  "globals"       : { "project": "ablaze" },
+  "components"    : [  ],
+  "views"         : [  ],
+  "roles"         : [  ],
+  "testwindow"    : 0,
+  "forms"         : {
+      "users":{ "name": null }
+  }
+}

@@ -236,10 +236,10 @@ $ablaze.vue.filters = {
   //calc_time_ms  : function (value) { return calc_time_since(value) },
 }
 
-const AblazeVue = {}
-AblazeVue.install = function (Vue, options) {
+const AblazeVuex = {}
+AblazeVuex.install = function (Vue, options) {
 
-  const AblazeVuex={
+  const DynamicVuexBase={
     namespaced:!0,
     state(){return{ value:null }},
     mutations:{setValue(state,value){ state.value=value } },
@@ -248,7 +248,7 @@ AblazeVue.install = function (Vue, options) {
   }
   const DynamicVuex = function(key, value) {
     const model  = `abz-${ key }`;
-    options.store.registerModule(`${ model }`, AblazeVuex);
+    options.store.registerModule(`${ model }`, DynamicVuexBase);
     options.store.dispatch(`${ model }/value`, value)
     return {
         get: function () {
@@ -275,65 +275,4 @@ AblazeVue.install = function (Vue, options) {
     computed: GLOBAL_KEY_VALUE,
   })
 
-
-  Vue.component('test-click', {
-    methods: {
-      clean () {
-      },
-    },
-    template: `<h1 @click="globals.project='hlop3z'"> Click Me </h1>`,
-  })
-
-  Vue.component('api-form', {
-    props:{
-      name   : String,
-      url    : String,
-      crud   : String,
-      cors   : {
-        type   : Boolean,
-        default: false
-      },
-    },
-    data: () => ({
-      valid: false,
-      default_form: {}
-    }),
-    computed:{
-      form:{
-        get: function () {
-          return this.forms[ this.name ]
-        },
-        set: function (value) {
-          this.forms[ this.name ] = value
-        }        
-      },
-    },
-    mounted() {
-      this.default_form = JSON.parse(JSON.stringify( this.form ));
-    },
-    methods: {
-      sendToServer () {
-        console.log( "Sent to Server!" );
-        this.resetDefaults();
-      },
-      resetDefaults () {
-        this.form = JSON.parse(JSON.stringify( this.default_form ));
-      },      
-      submit () {
-        var vm = this;
-        this.$refs[ this.name ].validate();
-        if( this.valid ){
-          this.sendToServer();
-        }
-      },
-      reset () {
-        this.$refs[ this.name ].resetValidation()
-      },
-      clean () {
-        //this.$refs[ this.name ].reset()
-        this.resetDefaults();
-      },
-    },
-    template: `<v-form :ref="name" v-model="valid"> <slot v-bind:submit="submit" v-bind:reset="reset" v-bind:clean="clean" v-bind:form="form"></slot>  </v-form>`,
-  })
 }

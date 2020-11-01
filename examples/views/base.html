@@ -35,8 +35,10 @@
     Vue.prototype.$http.api  = axios.create({ withCredentials: false });
     Vue.prototype.$http.cors = axios.create({ withCredentials: true });
 
-    Vue.mixin({
-    })
+    const routes = [
+      { path: '/foo', component: Page1 },
+    ]
+    const router = new VueRouter({ routes })
 
     const store  = new Vuex.Store({ state: () => ( @= data =@ ) })
     Vue.use( AblazeVue, { store } );

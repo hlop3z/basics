@@ -1,0 +1,8 @@
+{
+  "example-test"  : "base/__example__.html",
+  "api-form"      : "base/forms.html",
+  "the-view"      : "base/container.html",
+
+  "example-form"  : "forms/__example__.html"
+
+}

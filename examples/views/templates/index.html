@@ -18,78 +18,39 @@
 
 
 @@ block body @@
-  <v-app> 
+  <v-app>
 
 
       <v-main>
-        <v-container
-          fluid
-          v-scroll.self="(e)=>( testwindow = e.target.scrollTop )"
-          class="overflow-y-auto"
-          :style="{  maxHeight: ( (screen.height - 5) + 'px' )  }"
-        >
-
-
+        <the-view>
           <v-row>
 
             <v-col
               cols="12"
             >
+
+              <example-test></example-test>
+              <example-form></example-form>
+
+              <br>
               {{ globals }}
+              <br>
               {{ globals.project | cut(1) }}
-              <p>
-                {{ testwindow }}
-              </p>
-              <p>
-                {{ api }}
-              </p>
-
-              <test-click></test-click>
-              
-
-
-              <p>
-                {{ forms }}
-              </p>
+              <br>
+              {{ testwindow }}
+              <br>
+              {{ api }}
+              <br>
+              {{ forms }}
+              <br>
               {{ screen }}
-
-              <api-form
-                name="users"
-                crud="create"
-                url="/json"
-                cors
-                v-slot="{ form, submit, clean, reset }"
-              >
-
-                <v-text-field
-                  v-model="form.name"
-                  label="Globals"
-                  append-icon="mdi-plus"
-                  @click:append="reset"
-                  @input="$nextTick(() => { form.name = $ablaze.field.username( form.name ) })"
-                  :rules="[
-                    v => !!v || 'Primary-Key is required',
-                  ]"
-                >
-                </v-text-field>
-
-              <v-btn @click="submit" depressed color="success">
-                submit
-              </v-btn>
-              <v-btn @click="reset" depressed color="info">
-                reset
-              </v-btn>
-              <v-btn @click="clean" depressed color="warning">
-                clean
-              </v-btn>
-              </api-form>
 
             </v-col>
 
           </v-row>
 
 
-        </v-container>
+        </the-view>
       </v-main>
 
 

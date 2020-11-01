@@ -1,0 +1,60 @@
+<template>
+ <v-form :ref="name" v-model="valid">
+  <slot v-bind:clean="clean" v-bind:form="form" v-bind:reset="reset" v-bind:submit="submit">
+  </slot>
+ </v-form>
+</template>
+<script>
+ export default {
+    props: {
+      name: String,
+      url: String,
+      crud: String,
+      cors: {
+        type: Boolean,
+        default: false
+      },
+    },
+    data: () => ({
+      valid: false,
+      default_form: {}
+    }),
+    computed: {
+      form: {
+        get: function() {
+          return this.forms[ this.name ]
+        },
+        set: function(value) {
+          this.forms[ this.name ] = value
+        }
+      },
+    },
+    mounted() {
+      this.default_form = JSON.parse(JSON.stringify( this.form ));
+    },
+    methods: {
+      sendToServer() {
+        console.log("Sent to Server!");
+        this.resetDefaults();
+      },
+      resetDefaults() {
+        this.form = JSON.parse(JSON.stringify( this.default_form ));
+      },
+      submit() {
+        var vm = this;
+        this.$refs[ this.name ].validate();
+        if ( this.valid ) {
+          this.sendToServer();
+        }
+      },
+      reset() {
+        this.$refs[ this.name ].resetValidation()
+      },
+      clean() {
+        //this.$refs[ this.name ].reset()
+        this.resetDefaults();
+      },
+    },
+
+  }
+</script>

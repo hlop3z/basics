@@ -1,48 +1,48 @@
-from quart import Quart, request, send_file
-import jinja2, json, pathlib
+import json, pathlib
+import uuid
+import glob
 
+ruid = lambda: str( uuid.uuid4() ).split('-')[0]
 
+from Vue import VueTemplates, load_config
 
 PROJECT = pathlib.Path(__file__).resolve().parents[2]
 PATH    = pathlib.Path(__file__).resolve().parents[0]
 
+
+UID         = ruid()
+CONFIG      = load_config('app')
+DEBUG       = CONFIG['debug']
+VUEX        = load_config('vuex')
+COMPONENTS  = load_config('components')
+
+
+
+TEMPLATE_SETUP = {
+    "base"      : "base_sanic.html",
+    "static"    : "__static__",
+    "debug"     : DEBUG,
+    "vuex"      : json.dumps( VUEX ),
+    "components": f"components-{ UID }.js",
+}
+
+
+
+from quart import Quart, request, send_file
 app = Quart('frontend_quart')
 
 
-VUEX_SETUP = {
-    "globals"       : { "project": 'ablaze' },
-    "components"    : [  ],
-    "views"         : [  ],
-    "roles"         : [  ],
-    "testwindow"    : 0,
-    "screen"        : {'width':0, 'height':0},
-    "forms"         : {
-        "users":{ "name": None }
-    },
-    "api"           : {
-        "core": 'http://0.0.0.0:8085'
-    },
-}
-
-TEMPLATE_SETUP = {
-    "base"   : "base_sanic.html",
-    "static" : "__static__",
-    "vuex"   : json.dumps( VUEX_SETUP ),
-}
-
-
 @app.route("/")
-async def app_root():
-    templateLoader = jinja2.FileSystemLoader(searchpath=f'{ PATH }')
-    templateEnv = jinja2.Environment(loader=templateLoader, trim_blocks=True,
-        block_start_string='@@', block_end_string='@@',
-        variable_start_string='@=', variable_end_string='=@'
-    )
-    template_file = "templates/index.html"
-    template  = templateEnv.get_template( template_file )
+@app.route("/<path:path>")
+async def app_root(path=None):
+    vue = VueTemplates( DEBUG, PATH )
+    vue.set_components(PROJECT, UID, COMPONENTS)
+    file = path.split('/')[0]
+    args = path.split('/')[1:]
+    template  = vue.template( file )
+    print( args )
     BASE_HTML = template.render( **TEMPLATE_SETUP )
     return BASE_HTML
-
 
 
 @app.route("/__static__/<path:path>")
@@ -50,7 +50,6 @@ async def app_send_from_file( path ):
     STATIC  = str( PROJECT / 'static' / path )
     data    = await send_file( STATIC )
     return data
-
 
 
 if __name__ == "__main__":
