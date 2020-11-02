@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1> 404 </h1>
+    <h1 @click="go('home')"> User {{ $route.params.username }} </h1>
+    <h1> {{ api }} </h1>
   </div>
 </template>
 <script>

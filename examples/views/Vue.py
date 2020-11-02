@@ -27,6 +27,7 @@ def MakeVue(name, path):
     template = rreplace(str( soup.template ).replace('<template>', '', 1), '</template>', '', 1).strip()
     script   = rreplace(str( soup.script ).replace('<script>', '', 1), '</script>', '', 1).strip().replace('export default', '', 1).strip()
     style    = rreplace(str( soup.style ).replace('<style>', '', 1), '</style>', '', 1).strip()
+    if script == 'None': script = "{}"
 
     return f"""
 Component('{ name }', { script },
@@ -34,6 +35,14 @@ Component('{ name }', { script },
 template: `{ template }`
 }})
     """.strip()
+
+
+def MakeVuePage( opts ):
+    """
+    with open(path, 'r') as file:
+        html_doc = file.read()
+    """
+    print( opts )
 
 
 def VueComponents( path, uid, templates ):
@@ -45,7 +54,7 @@ def VueComponents( path, uid, templates ):
 const AblazeVue = {{}}
 AblazeVue.install = function ( Vue ) {{
 const Component = function ( name, scripts, template ) {{
-return Vue.component(name, {{...scripts, ...template}});
+    return Vue.component(name, {{...scripts, ...template}});
 }}
 { components }
 }}
@@ -69,14 +78,59 @@ return Vue.component(name, {{...scripts, ...template}});
         file.write( AblazeVue )
 
 
+def VuePages( path, uid, pages ):
+    vue_pages  = []
+    vue_routes = []
+    for p in pages:
+        #print( p['url'] )
+        name     = p['path'].replace('.html', '')
+        varname  = f"Page{ name.title() }"
+        vuepage  = f"""{{ path: '{ p['url'] }', name: '{ name }', component: { varname } }},"""
+
+        vue_routes.append( vuepage )
+
+        with open(f"templates/{ p['path'] }", 'r') as file:
+            html_doc = file.read()
+
+        soup     = BeautifulSoup(html_doc, 'html.parser')
+        template = rreplace(str( soup.template ).replace('<template>', '', 1), '</template>', '', 1).strip()
+        script   = rreplace(str( soup.script ).replace('<script>', '', 1), '</script>', '', 1).strip().replace('export default', '', 1).strip()
+        if script == 'None': script = "{}"
+
+        my_string =  f"""
+const { varname } = VuePage({ script },
+{{
+template: `{ template }`
+}})
+        """.strip()
+        vue_pages.append( my_string )
+
+    vue_routes = "\n\t".join( vue_routes )
+    vue_routes = f"""
+const routes = [
+\t{ vue_routes }
+]
+""".strip()
+    vue_pages = "\n\n".join( vue_pages )
+    vue_pages = f"""
+const VuePage = function ( scripts, template ) {{
+    return {{...scripts, ...template}}
+}}
+{ vue_pages }
+"""
+    PROJECT = str( path / 'static' / 'tmp' / f'pages-{ uid }.js' )
+    with open(PROJECT, 'w') as file:
+        file.write( vue_pages )
+
+    PROJECT = str( path / 'static' / 'tmp' / f'routes-{ uid }.js' )
+    with open(PROJECT, 'w') as file:
+        file.write( vue_routes )
 
 
 def load_config( path ):
     with open(f"config/{ path }.json", "r") as f:
         CONFIG = json.load(f)
     return CONFIG
-
-
 
 
 class VueTemplates:
@@ -87,23 +141,13 @@ class VueTemplates:
             block_start_string='@@', block_end_string='@@',
             variable_start_string='@=', variable_end_string='=@'
         )
-
-        templates   = glob.glob(f"{ path }/templates/*.html")
-        files       = [ i.replace(f"{ path }/templates/", "") for i in templates ]
-        names       = [ i.replace('.html', '') for i in files ]
-        output      = collections.namedtuple('Templates', ['files', 'names'])
-
-        self.debug = debug
-        self.templates = output(files, names)
+        self.debug       = debug
 
     def template( self, path ):
-        return self.templateEnv.get_template( self.html_template( path ) )
+        return self.templateEnv.get_template( path )
 
     def set_components( self, project, uid, components ):
         if self.debug: VueComponents(project, uid, components)
 
-    def html_template( self, page ):
-        if not page                        : page = 'index'
-        if page not in self.templates.names: page = '404'
-        template = lambda t: f"templates/{ t }.html"
-        return template( page )
+    def set_pages( self, project, uid, components ):
+        if self.debug: VuePages(project, uid, components)

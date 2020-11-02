@@ -273,6 +273,38 @@ AblazeVuex.install = function (Vue, options) {
   Vue.mixin({
     filters : $ablaze.vue.filters,
     computed: GLOBAL_KEY_VALUE,
+    methods: {
+      go(name=null, params={}){
+        function shallowEqual(object1, object2) {
+          const keys1 = Object.keys(object1);
+          const keys2 = Object.keys(object2);
+          if (keys1.length !== keys2.length) {
+            return false;
+          }
+          for (let key of keys1) {
+            if (object1[key] !== object2[key]) {
+              return false;
+            }
+          }
+          return true;
+        }
+
+        if(this.$route.name !== name || !shallowEqual(this.$route.params, params)){
+          if(params){
+            this.$router.push({ name: name, params: params })
+          }else{
+            this.$router.push({ name: name })
+          }
+        }
+      },
+
+      stopLoading() {
+          const auto = () => this.loading.state = false;
+          const delay = this.loading.time;
+          setTimeout(auto, delay)
+      },
+    }
   })
+
 
 }

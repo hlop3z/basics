@@ -15,7 +15,7 @@ CONFIG      = load_config('app')
 DEBUG       = CONFIG['debug']
 VUEX        = load_config('vuex')
 COMPONENTS  = load_config('components')
-
+PAGES       = load_config('pages')
 
 
 TEMPLATE_SETUP = {
@@ -24,6 +24,8 @@ TEMPLATE_SETUP = {
     "debug"     : DEBUG,
     "vuex"      : json.dumps( VUEX ),
     "components": f"components-{ UID }.js",
+    "routes"    : f"routes-{ UID }.js",
+    "pages"     : f"pages-{ UID }.js",
 }
 
 
@@ -37,10 +39,15 @@ app = Quart('frontend_quart')
 async def app_root(path=None):
     vue = VueTemplates( DEBUG, PATH )
     vue.set_components(PROJECT, UID, COMPONENTS)
-    file = path.split('/')[0]
-    args = path.split('/')[1:]
-    template  = vue.template( file )
-    print( args )
+    vue.set_pages(PROJECT, UID, PAGES)
+
+    if path:
+        file = path.split('/')[0]
+        args = path.split('/')[1:]
+    else:
+        file = None
+        args = []
+    template  = vue.template( "base_sanic.html" )
     BASE_HTML = template.render( **TEMPLATE_SETUP )
     return BASE_HTML
 

@@ -9,13 +9,23 @@
   <link href="/@= static =@/vendors/vuetify/vuetify.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="/@= static =@/favicon.ico">
   @@ block head @@ @@ endblock @@
-
 </head>
 
-<body style="overflow-y: hidden; overflow-x: hidden;">
+<body>
 
 
-  <div id="app" v-resize="onResize"> @@ block body @@ @@ endblock @@ </div>
+  <div id="app" v-resize="onResize">
+    <v-overlay
+      :absolute="true"
+      opacity="1"
+      :value="loading.state"
+    >
+    <h1>Loading ...</h1>
+    </v-overlay>
+    <transition>
+      <router-view></router-view>
+    </transition>
+  </div>
 
 
 
@@ -30,8 +40,12 @@
 
   @@ if debug @@
     <script src="/@= static =@/tmp/@= components =@"></script>
+    <script src="/@= static =@/tmp/@= pages =@"></script>
+    <script src="/@= static =@/tmp/@= routes =@"></script>
   @@ else @@
     <script src="/@= static =@/build/components.js"></script>
+    <script src="/@= static =@/build/pages.js"></script>
+    <script src="/@= static =@/build/routes.js"></script>
   @@ endif @@
 
   @@ block mixin @@ @@ endblock @@
@@ -45,26 +59,34 @@
     Vue.prototype.$http.api  = axios.create({ withCredentials: false });
     Vue.prototype.$http.cors = axios.create({ withCredentials: true });
 
-
+    var routes_names = {}
+    routes.forEach((view) => {
+      routes_names[ view.name ] = { scroller: 0 }
+    });
 
     Vue.use( AblazeVue );
-    Vue.use( AblazeVuex, { store, config:{ ...{ screen: {'width':0, 'height':0} },...config } } );
+    Vue.use( AblazeVuex, { store, config:{ ...{ screen: {'width':0, 'height':0} }, ...{ loading: { state:true, time:200 } }, ...{ routes: routes_names }, ...config } } );
 
-
+    const router = new VueRouter({
+      mode: 'history',
+      routes
+    })
 
     new Vue({
+      router,
       store,
       el: '#app',
       vuetify: new Vuetify(),
-      data: () => ({
-      }),
       mounted(){
+        this.stopLoading();
   		},
+      watch: {
+        '$route' (to, from) {
+          this.loading.state = true;
+          this.stopLoading();
+        }
+      },
       methods: {
-        onScroll (e) {
-          this.testwindow = e.target.scrollTop;
-          console.log( e.target.scrollTop );
-        },
         onResize () {
           this.screen = { width: window.innerWidth, height: window.innerHeight };
         },

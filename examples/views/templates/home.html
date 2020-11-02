@@ -1,0 +1,54 @@
+<template>
+
+  <v-app>
+    <v-app-bar
+      absolute
+      color="deep-purple accent-4"
+      dark
+      app
+    >
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+      <v-btn icon>
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <v-btn icon @click="go('userProfile', { username: 'toxic' })">
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-toolbar-title>{{ routes }}</v-toolbar-title>
+    </v-app-bar>
+
+    <v-main >
+      <the-view cut="120"> {{ $ablaze.lorem.s( 1000 ) }} </the-view>
+    </v-main>
+
+
+    <v-footer padless app>
+      <v-col
+        class="text-center"
+        cols="12"
+      >
+        {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+      </v-col>
+    </v-footer>
+
+  </v-app>
+
+</template>
+<script>
+ export default {
+  props: {
+  },
+  data: () => ({
+  }),
+  computed: {
+  },
+  mounted(){
+  },
+  updated(){
+  },
+  methods: {
+  },
+}
+</script>

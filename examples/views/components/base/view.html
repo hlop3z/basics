@@ -1,0 +1,50 @@
+<template>
+  <v-container
+    fluid
+    :ref="$route.name"
+    v-scroll.self="onScroll"
+    class="overflow-y-auto"
+    :style="{
+      maxHeight: ( (screen.height - cut) + 'px' ),
+    }"
+  >
+    <slot></slot>
+  </v-container>
+
+</template>
+<script>
+ export default {
+  props: {
+    delay: { default: 500, type: Number },
+    cut  : { default: 0, type: Number }
+  },
+  data: () => ({
+    name : "testing"
+  }),
+  computed: {
+    scroller:{
+      get: function () {
+        return this.routes[ this.$route.name ].scroller
+      },
+      set: function (value) {
+        this.routes[ this.$route.name ].scroller = value;
+      }
+    },
+  },
+  mounted(){
+    this.pageScroll( this.scroller );
+  },
+  updated(){
+    this.pageScroll( this.scroller );
+  },
+  methods: {
+    pageScroll(to) {
+        const autoScroll = () => this.$el.scroll(0, to);
+        setTimeout(autoScroll, 20)
+    },
+    onScroll(e){
+      this.scroller = e.target.scrollTop;
+    }
+  },
+}
+</script>

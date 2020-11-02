@@ -1,7 +1,7 @@
 const AblazeVue = {}
 AblazeVue.install = function ( Vue ) {
 const Component = function ( name, scripts, template ) {
-return Vue.component(name, {...scripts, ...template});
+    return Vue.component(name, {...scripts, ...template});
 }
 Component('example-test', {
   data: () => ({
@@ -82,21 +82,43 @@ template: `<v-form :ref="name" v-model="valid">
 })
 
 Component('the-view', {
+  props: {
+    delay: { default: 500, type: Number },
+    cut  : { default: 0, type: Number }
+  },
   data: () => ({
     name : "testing"
   }),
   computed: {
+    scroller:{
+      get: function () {
+        return this.routes[ this.$route.name ].scroller
+      },
+      set: function (value) {
+        this.routes[ this.$route.name ].scroller = value;
+      }
+    },
   },
   mounted(){
+    this.pageScroll( this.scroller );
+  },
+  updated(){
+    this.pageScroll( this.scroller );
   },
   methods: {
+    pageScroll(to) {
+        const autoScroll = () => this.$el.scroll(0, to);
+        setTimeout(autoScroll, 20)
+    },
     onScroll(e){
-      this['testwindow'] = e.target.scrollTop;
+      this.scroller = e.target.scrollTop;
     }
   },
 },
 {
-template: `<v-container :style="{  maxHeight: ( (screen.height - 5) + 'px' )  }" class="overflow-y-auto" fluid="" v-scroll.self="onScroll">
+template: `<v-container :ref="$route.name" :style="{
+      maxHeight: ( (screen.height - cut) + 'px' ),
+    }" class="overflow-y-auto" fluid="" v-scroll.self="onScroll">
 <slot></slot>
 </v-container>`
 })
