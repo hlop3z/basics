@@ -1,0 +1,29 @@
+<template>
+  <v-app-bar app dark color="deep-purple accent-4">
+    <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+    <v-btn icon>
+      <v-icon>mdi-home</v-icon>
+    </v-btn>
+    <v-btn icon @click="go('userProfile', { username: 'toxic' })">
+      <v-icon>mdi-heart</v-icon>
+    </v-btn>
+
+    <v-toolbar-title>Home</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-toolbar-title>{{ __keys__ }}</v-toolbar-title>
+  </v-app-bar>
+</template>
+
+<script>
+ export default {
+  data: () => ({
+  }),
+  computed: {
+  },
+  mounted(){
+  },
+  methods: {
+  },
+}
+</script>

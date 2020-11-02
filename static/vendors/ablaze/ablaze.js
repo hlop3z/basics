@@ -261,13 +261,13 @@ AblazeVuex.install = function (Vue, options) {
   }
 
 
-  var GLOBAL_KEY_VALUE = {};
+  var GLOBAL_KEY_VALUE = { };
   Object.keys( options.config ).forEach(key=>{
       GLOBAL_KEY_VALUE[ key ] = DynamicVuex(key, options.config[ key ]);
   })
 
-
-  Vue.prototype.$ablaze = $ablaze;
+  Vue.prototype.__keys__   = Object.keys( options.config );
+  Vue.prototype.$ablaze    = $ablaze;
   Vue.prototype.$timestamp = () => Math.round(new Date().getTime() / 1000);
 
   Vue.mixin({

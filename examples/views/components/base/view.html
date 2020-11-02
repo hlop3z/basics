@@ -1,22 +1,23 @@
 <template>
   <v-container
-    fluid
-    :ref="$route.name"
+    v-bind="$attrs"
     v-scroll.self="onScroll"
     class="overflow-y-auto"
     :style="{
       maxHeight: ( (screen.height - cut) + 'px' ),
+      overflowX: 'hidden',
     }"
   >
     <slot></slot>
+    <div style="min-height: 250px"></div>
   </v-container>
 
 </template>
 <script>
  export default {
   props: {
-    delay: { default: 500, type: Number },
-    cut  : { default: 0, type: Number }
+    cut         : { default: 0, type: Number },
+    autoScroll  : { default: false, type: Boolean }
   },
   data: () => ({
     name : "testing"
@@ -32,10 +33,10 @@
     },
   },
   mounted(){
-    this.pageScroll( this.scroller );
+    if ( this.autoScroll ) { this.pageScroll( this.scroller ); }
   },
   updated(){
-    this.pageScroll( this.scroller );
+    if ( this.autoScroll ) { this.pageScroll( this.scroller ); }
   },
   methods: {
     pageScroll(to) {

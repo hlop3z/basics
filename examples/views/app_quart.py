@@ -19,37 +19,40 @@ PAGES       = load_config('pages')
 
 
 TEMPLATE_SETUP = {
-    "base"      : "base_sanic.html",
     "static"    : "__static__",
     "debug"     : DEBUG,
     "vuex"      : json.dumps( VUEX ),
-    "components": f"components-{ UID }.js",
+    "app"       : f"app-{ UID }.js",
     "routes"    : f"routes-{ UID }.js",
-    "pages"     : f"pages-{ UID }.js",
 }
 
 
-
 from quart import Quart, request, send_file
+
+
 app = Quart('frontend_quart')
+vue = VueTemplates( PATH )
 
 
-@app.route("/")
-@app.route("/<path:path>")
-async def app_root(path=None):
-    vue = VueTemplates( DEBUG, PATH )
-    vue.set_components(PROJECT, UID, COMPONENTS)
-    vue.set_pages(PROJECT, UID, PAGES)
 
-    if path:
-        file = path.split('/')[0]
-        args = path.split('/')[1:]
-    else:
-        file = None
-        args = []
-    template  = vue.template( "base_sanic.html" )
-    BASE_HTML = template.render( **TEMPLATE_SETUP )
-    return BASE_HTML
+if DEBUG:
+    @app.route("/")
+    @app.route("/<path:path>")
+    async def app_root(path=None):
+        vue.set_vue(project=PROJECT, uid=UID, components=COMPONENTS, pages=PAGES)
+        template  = vue.template( "templates/__init__.html" )
+        BASE_HTML = template.render( **TEMPLATE_SETUP )
+        with open('index.html', 'w') as file:
+            file.write( BASE_HTML )    
+        return BASE_HTML
+else:
+    @app.route("/")
+    @app.route("/<path:path>")
+    async def app_root(path=None):
+        template  = vue.template( "index.html" )
+        BASE_HTML = template.render( **TEMPLATE_SETUP )
+        return BASE_HTML
+
 
 
 @app.route("/__static__/<path:path>")

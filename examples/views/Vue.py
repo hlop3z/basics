@@ -4,6 +4,8 @@ import glob
 import uuid
 import jinja2
 import collections
+import requests
+
 
 PATH = pathlib.Path(__file__).resolve().parents[0]
 ruid = lambda: str( uuid.uuid4() ).split('-')[0]
@@ -11,6 +13,23 @@ ruid = lambda: str( uuid.uuid4() ).split('-')[0]
 
 import os, shutil
 from bs4 import BeautifulSoup
+
+
+def delete_file(path, filename):
+    file_path = os.path.join(path, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+def load_config( path ):
+    with open(f"config/{ path }.json", "r") as f:
+        CONFIG = json.load(f)
+    return CONFIG
 
 
 def rreplace(s, old, new, occurrence):
@@ -37,17 +56,9 @@ template: `{ template }`
     """.strip()
 
 
-def MakeVuePage( opts ):
-    """
-    with open(path, 'r') as file:
-        html_doc = file.read()
-    """
-    print( opts )
 
 
 def VueComponents( path, uid, templates ):
-    STATIC  = str( path / 'static' / 'tmp' )
-    PROJECT = str( path / 'static' / 'tmp' / f'components-{ uid }.js' )
 
     components = "\n\n".join([ MakeVue(k, f"components/{ v }") for k,v in templates.items() ])
     AblazeVue  = f"""
@@ -60,22 +71,9 @@ const Component = function ( name, scripts, template ) {{
 }}
     """.strip()
 
-    if not os.path.exists( STATIC ):
-        os.makedirs( STATIC )
-
-    for filename in os.listdir( STATIC ):
-        file_path = os.path.join(STATIC, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    return AblazeVue
 
 
-    with open(PROJECT, 'w') as file:
-        file.write( AblazeVue )
 
 
 def VuePages( path, uid, pages ):
@@ -84,7 +82,7 @@ def VuePages( path, uid, pages ):
     for p in pages:
         #print( p['url'] )
         name     = p['path'].replace('.html', '')
-        varname  = f"Page{ name.title() }"
+        varname  = f"Page{ name.replace('/',' ').title().replace(' ','') }"
         vuepage  = f"""{{ path: '{ p['url'] }', name: '{ name }', component: { varname } }},"""
 
         vue_routes.append( vuepage )
@@ -118,36 +116,62 @@ const VuePage = function ( scripts, template ) {{
 }}
 { vue_pages }
 """
-    PROJECT = str( path / 'static' / 'tmp' / f'pages-{ uid }.js' )
-    with open(PROJECT, 'w') as file:
-        file.write( vue_pages )
-
-    PROJECT = str( path / 'static' / 'tmp' / f'routes-{ uid }.js' )
-    with open(PROJECT, 'w') as file:
-        file.write( vue_routes )
+    return vue_routes, vue_pages
 
 
-def load_config( path ):
-    with open(f"config/{ path }.json", "r") as f:
-        CONFIG = json.load(f)
-    return CONFIG
+
+
 
 
 class VueTemplates:
     """docstring for VueTemplates."""
-    def __init__(self, debug=False, path=None):
+    def __init__(self, path=None):
         templateLoader   = jinja2.FileSystemLoader(searchpath=f'{ path }')
         self.templateEnv = jinja2.Environment(loader=templateLoader, trim_blocks=True,
             block_start_string='@@', block_end_string='@@',
             variable_start_string='@=', variable_end_string='=@'
         )
-        self.debug       = debug
+        self.components  = None
+        self.pages       = None
+        self.routes      = None
 
     def template( self, path ):
         return self.templateEnv.get_template( path )
 
     def set_components( self, project, uid, components ):
-        if self.debug: VueComponents(project, uid, components)
+        self.components = VueComponents(project, uid, components)
 
     def set_pages( self, project, uid, components ):
-        if self.debug: VuePages(project, uid, components)
+        self.routes, self.pages = VuePages(project, uid, components)
+
+
+    def set_vue( self, project=None, uid=None, components=None, pages=None ):
+        self.set_components(project, uid, components)
+        self.set_pages(project, uid, pages)
+        _components = self.minify( self.components )
+        _pages      = self.minify( self.pages )
+        _routes     = self.routes
+
+
+        JS_CODE     = "\n".join([ _components, _pages ])
+        STATIC      = str( project / 'static' / 'build' )
+        PROJECT     = str( project / 'static' / 'build' / f'app-{ uid }.js' )
+        ROUTES      = str( project / 'static' / 'build' / f'routes-{ uid }.js' )
+
+        if not os.path.exists( STATIC ): os.makedirs( STATIC )
+
+        for filename in os.listdir( STATIC ):
+            delete_file(STATIC, filename)
+
+        with open(PROJECT, 'w') as file:
+            file.write( JS_CODE )
+
+        with open(ROUTES, 'w') as file:
+            file.write( _routes )
+
+
+    @staticmethod
+    def minify( text ):
+        url      = 'https://javascript-minifier.com/raw'
+        data     = { 'input': text }
+        return requests.post(url, data=data).text

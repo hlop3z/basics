@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-
-
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+
+
   <link href="/@= static =@/vendors/material/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="/@= static =@/vendors/vuetify/vuetify.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="/@= static =@/favicon.ico">
@@ -38,26 +38,22 @@
 
   @@ block scripts @@ @@ endblock @@
 
-  @@ if debug @@
-    <script src="/@= static =@/tmp/@= components =@"></script>
-    <script src="/@= static =@/tmp/@= pages =@"></script>
-    <script src="/@= static =@/tmp/@= routes =@"></script>
-  @@ else @@
-    <script src="/@= static =@/build/components.js"></script>
-    <script src="/@= static =@/build/pages.js"></script>
-    <script src="/@= static =@/build/routes.js"></script>
-  @@ endif @@
+  <script src="/@= static =@/build/@= app =@"></script>
+  <script src="/@= static =@/build/@= routes =@"></script>
 
   @@ block mixin @@ @@ endblock @@
 
 
-  <script>
+  <script type="application/javascript">
     const store   = new Vuex.Store({ state: () => ({  }) });
     const config  = @= vuex =@;
+    const load_time  = 200;
+
 
     Vue.prototype.$http = {};
     Vue.prototype.$http.api  = axios.create({ withCredentials: false });
     Vue.prototype.$http.cors = axios.create({ withCredentials: true });
+
 
     var routes_names = {}
     routes.forEach((view) => {
@@ -65,13 +61,18 @@
     });
 
     Vue.use( AblazeVue );
-    Vue.use( AblazeVuex, { store, config:{ ...{ screen: {'width':0, 'height':0} }, ...{ loading: { state:true, time:200 } }, ...{ routes: routes_names }, ...config } } );
+    Vue.use( AblazeVuex, { store, config:{ 
+      ...{ screen : {'width':0, 'height':0} }, 
+      ...{ loading: { state: true, time: load_time } }, 
+      ...{ routes : routes_names }, 
+      ...config } 
+    });
+
 
     const router = new VueRouter({
       mode: 'history',
       routes
     })
-
     new Vue({
       router,
       store,

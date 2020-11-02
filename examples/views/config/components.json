@@ -3,6 +3,8 @@
   "api-form"      : "base/forms.html",
   "the-view"      : "base/view.html",
 
+  "abz-main-bar"  : "bars/default.html",
+
   "example-form"  : "forms/__example__.html"
 
 }

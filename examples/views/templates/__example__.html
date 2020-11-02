@@ -1,39 +1,30 @@
 <template>
   <v-app>
+    <v-app-bar app>
+      <!-- -->
+    </v-app-bar>
 
-    <abz-main-bar></abz-main-bar>
-
-
-    <v-navigation-drawer app :value="false">
-      <h1>Left</h1>
+    <v-navigation-drawer app>
+      <!-- -->
     </v-navigation-drawer>
 
-    <v-navigation-drawer app right :value="false">
-      <h1>Right</h1>
+    <v-navigation-drawer app right>
+      <!-- -->
     </v-navigation-drawer>
 
     <v-main>
       <the-view fluid auto-scroll cut="120"> 
-        <h1>Main</h1>
-        {{ $ablaze.lorem.s( 100 ) }}
+        <!-- -->
       </the-view>
     </v-main>
 
 
     <v-footer padless app>
-      <v-col
-        class="text-center"
-        cols="12"
-      >
-        {{ new Date().getFullYear() }} — <strong>Ablaze</strong>
-      </v-col>
+      <!-- -->
     </v-footer>
-
-
-
-
   </v-app>
 </template>
+
 
 <script>
  export default {

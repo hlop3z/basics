@@ -1,6 +1,6 @@
 [
   { "url": "/"                      , "path": "home.html" },
-  { "url": "/debug"                 , "path": "debug.html" },
-  { "url": "/user/:username/profile", "path": "userProfile.html" },
-  { "url": "/*"                     , "path": "404.html" }
+  { "url": "/user/:username/profile", "path": "user/profile.html" },
+  { "url": "/debug"                 , "path": "basics/debug.html" },
+  { "url": "/*"                     , "path": "basics/404.html" }
 ]
