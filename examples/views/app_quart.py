@@ -3,20 +3,20 @@ import uuid
 
 ruid = lambda: str( uuid.uuid4() ).split('-')[0]
 
-from Vue import VueTemplates
+from basics.blueprints import Vue
 
 PROJECT = pathlib.Path(__file__).resolve().parents[2]
 PATH    = pathlib.Path(__file__).resolve().parents[0]
 
 
-vue         = VueTemplates( file_path = PATH, project_path = PROJECT )
+vue         = Vue( file_path = PATH, project_path = PROJECT )
 UID         = ruid()
-CONFIG      = load_config('app')
+CONFIG      = vue.load_config('app')
+VUEX        = vue.load_config('vuex')
+COMPONENTS  = vue.load_config('components')
+PAGES       = vue.load_config('pages')
 DEBUG       = CONFIG['debug']
-VUEX        = load_config('vuex')
-COMPONENTS  = load_config('components')
-PAGES       = load_config('pages')
-SETUP       = f"setup-{ UID }.js"
+
 
 TEMPLATE_SETUP = {
     "static"    : "__static__",
@@ -24,7 +24,7 @@ TEMPLATE_SETUP = {
     "vuex"      : json.dumps( VUEX ),
     "app"       : f"app-{ UID }.js",
     "routes"    : f"routes-{ UID }.js",
-    "setup"     : SETUP,
+    "setup"     : f"setup-{ UID }.js",
 }
 
 
