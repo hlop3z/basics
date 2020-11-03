@@ -4,10 +4,10 @@ Version: 0.0.1
 Summary: App - Python Module Blueprint
 Home-page: https://github.com/hlop3z/basics
 Author: hlop3z
-Author-email: hlopez.devops@gmail.com
+Author-email: fustack@googlegroups.com
 License: UNKNOWN
 Description: # Cookie-Cutter Web-Framework
-        * Sanic
+        * Sanic or Quart
         * Jinja2
         * Axios
         * Vue
@@ -94,6 +94,11 @@ Description: # Cookie-Cutter Web-Framework
         ```
         python3.7 project.py myapp
         ```
+        
+        
+        ## License
+        
+        This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3.7

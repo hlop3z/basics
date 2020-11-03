@@ -8,9 +8,8 @@
   <link href="/@= static =@/vendors/material/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="/@= static =@/vendors/vuetify/vuetify.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="/@= static =@/favicon.ico">
-  @@ block head @@ @@ endblock @@
-</head>
 
+</head>
 <body>
 
 
@@ -28,21 +27,15 @@
   </div>
 
 
-
   <script src="/@= static =@/vendors/ablaze/ablaze.js"></script>
   <script src="/@= static =@/vendors/ablaze/records.js"></script>
 
   <script src="/@= static =@/vendors/avue/vue_bundle.js"></script>
   <script src="/@= static =@/vendors/vuetify/vuetify.min.js"></script>
 
-
-  @@ block scripts @@ @@ endblock @@
-
   <script src="/@= static =@/build/@= app =@"></script>
   <script src="/@= static =@/build/@= routes =@"></script>
-
-  @@ block mixin @@ @@ endblock @@
-
+  <script src="/@= static =@/build/@= setup =@"></script>
 
   <script type="application/javascript">
     const store   = new Vuex.Store({ state: () => ({  }) });
@@ -61,11 +54,11 @@
     });
 
     Vue.use( AblazeVue );
-    Vue.use( AblazeVuex, { store, config:{ 
-      ...{ screen : {'width':0, 'height':0} }, 
-      ...{ loading: { state: true, time: load_time } }, 
-      ...{ routes : routes_names }, 
-      ...config } 
+    Vue.use( AblazeVuex, { store, config:{
+      ...{ screen : {'width':0, 'height':0} },
+      ...{ loading: { state: true, time: load_time } },
+      ...{ routes : routes_names },
+      ...config }
     });
 
 
@@ -94,7 +87,5 @@
       },
     })
   </script>
-
 </body>
-
 </html>

@@ -1,97 +1,29 @@
 <!DOCTYPE html>
+
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-
-
-  <link href="/__static__/vendors/material/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="/__static__/vendors/vuetify/vuetify.min.css" rel="stylesheet">
-  <link rel="shortcut icon" href="/__static__/favicon.ico">
-   </head>
-
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" name="viewport"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"/>
+<link href="/__static__/vendors/material/css/materialdesignicons.min.css" rel="stylesheet"/>
+<link href="/__static__/vendors/vuetify/vuetify.min.css" rel="stylesheet"/>
+<link href="/__static__/favicon.ico" rel="shortcut icon"/>
+</head>
 <body>
-
-
-  <div id="app" v-resize="onResize">
-    <v-overlay
-      :absolute="true"
-      opacity="1"
-      :value="loading.state"
-    >
-    <h1>Loading ...</h1>
-    </v-overlay>
-    <transition>
-      <router-view></router-view>
-    </transition>
-  </div>
-
-
-
-  <script src="/__static__/vendors/ablaze/ablaze.js"></script>
-  <script src="/__static__/vendors/ablaze/records.js"></script>
-
-  <script src="/__static__/vendors/avue/vue_bundle.js"></script>
-  <script src="/__static__/vendors/vuetify/vuetify.min.js"></script>
-
-
-   
-  <script src="/__static__/build/app-d6be4346.js"></script>
-  <script src="/__static__/build/routes-d6be4346.js"></script>
-
-   
-
-  <script>
-    const store   = new Vuex.Store({ state: () => ({  }) });
-    const config  = {"api": {"core": "http://0.0.0.0:8085"}, "globals": {"project": "ablaze"}, "forms": {"users": {"name": null}}};
-    const load_time  = 200;
-
-
-    Vue.prototype.$http = {};
-    Vue.prototype.$http.api  = axios.create({ withCredentials: false });
-    Vue.prototype.$http.cors = axios.create({ withCredentials: true });
-
-
-    var routes_names = {}
-    routes.forEach((view) => {
-      routes_names[ view.name ] = { scroller: 0 }
-    });
-
-    Vue.use( AblazeVue );
-    Vue.use( AblazeVuex, { store, config:{ 
-      ...{ screen : {'width':0, 'height':0} }, 
-      ...{ loading: { state: true, time: load_time } }, 
-      ...{ routes : routes_names }, 
-      ...config } 
-    });
-
-
-    const router = new VueRouter({
-      mode: 'history',
-      routes
-    })
-    new Vue({
-      router,
-      store,
-      el: '#app',
-      vuetify: new Vuetify(),
-      mounted(){
-        this.stopLoading();
-  		},
-      watch: {
-        '$route' (to, from) {
-          this.loading.state = true;
-          this.stopLoading();
-        }
-      },
-      methods: {
-        onResize () {
-          this.screen = { width: window.innerWidth, height: window.innerHeight };
-        },
-      },
-    })
-  </script>
+<div id="app" v-resize="onResize">
+<v-overlay :absolute="true" :value="loading.state" opacity="1">
+<h1>Loading ...</h1>
+</v-overlay>
+<transition>
+<router-view></router-view>
+</transition>
+</div>
+<script src="/__static__/vendors/ablaze/ablaze.js"></script>
+<script src="/__static__/vendors/ablaze/records.js"></script>
+<script src="/__static__/vendors/avue/vue_bundle.js"></script>
+<script src="/__static__/vendors/vuetify/vuetify.min.js"></script>
+<script src="/__static__/build/app-2e5ca1ce.js"></script>
+<script src="/__static__/build/routes-2e5ca1ce.js"></script>
+<script src="/__static__/build/setup-2e5ca1ce.js"></script>
 
 </body>
-
 </html>

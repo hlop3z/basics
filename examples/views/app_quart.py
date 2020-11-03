@@ -1,22 +1,22 @@
 import json, pathlib
 import uuid
-import glob
 
 ruid = lambda: str( uuid.uuid4() ).split('-')[0]
 
-from Vue import VueTemplates, load_config
+from Vue import VueTemplates
 
 PROJECT = pathlib.Path(__file__).resolve().parents[2]
 PATH    = pathlib.Path(__file__).resolve().parents[0]
 
 
+vue         = VueTemplates( file_path = PATH, project_path = PROJECT )
 UID         = ruid()
 CONFIG      = load_config('app')
 DEBUG       = CONFIG['debug']
 VUEX        = load_config('vuex')
 COMPONENTS  = load_config('components')
 PAGES       = load_config('pages')
-
+SETUP       = f"setup-{ UID }.js"
 
 TEMPLATE_SETUP = {
     "static"    : "__static__",
@@ -24,35 +24,32 @@ TEMPLATE_SETUP = {
     "vuex"      : json.dumps( VUEX ),
     "app"       : f"app-{ UID }.js",
     "routes"    : f"routes-{ UID }.js",
+    "setup"     : SETUP,
 }
 
 
-from quart import Quart, request, send_file
+
+from quart import Quart, request, send_file, render_template
 
 
-app = Quart('frontend_quart')
-vue = VueTemplates( PATH )
-
+app = Quart('frontend')
 
 
 if DEBUG:
     @app.route("/")
     @app.route("/<path:path>")
     async def app_root(path=None):
-        vue.set_vue(project=PROJECT, uid=UID, components=COMPONENTS, pages=PAGES)
-        template  = vue.template( "templates/__init__.html" )
-        BASE_HTML = template.render( **TEMPLATE_SETUP )
-        with open('index.html', 'w') as file:
-            file.write( BASE_HTML )    
-        return BASE_HTML
+        vue.set_vue(uid=UID, components=COMPONENTS, pages=PAGES)
+        template   = vue.template( "app/__init__.html" )
+        BASE_HTML  = template.render( **TEMPLATE_SETUP )
+        html_index = vue.set_setup( uid=UID, code=BASE_HTML )
+        return html_index.encode('utf-8')
+
 else:
     @app.route("/")
     @app.route("/<path:path>")
     async def app_root(path=None):
-        template  = vue.template( "index.html" )
-        BASE_HTML = template.render( **TEMPLATE_SETUP )
-        return BASE_HTML
-
+        return await send_file( 'index.html' )
 
 
 @app.route("/__static__/<path:path>")
