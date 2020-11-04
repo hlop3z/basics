@@ -32,9 +32,9 @@ readme/CRUD_Operators.md
 readme/SQL_Operators.md
 readme/Schema.md
 static/favicon.ico
-static/build/app-2e5ca1ce.js
-static/build/routes-2e5ca1ce.js
-static/build/setup-2e5ca1ce.js
+static/build/app-f055980b.js
+static/build/routes-f055980b.js
+static/build/setup-f055980b.js
 static/vendors/ablaze/ablaze.js
 static/vendors/ablaze/records.js
 static/vendors/avue/axios.min.map

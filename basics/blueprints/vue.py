@@ -15,7 +15,7 @@ def minify( text ):
     return requests.post(url, data=data).text
 
 
-def delete_file(path, filename):
+def delete_file( path, filename ):
     file_path = os.path.join(path, filename)
     try:
         if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -26,13 +26,13 @@ def delete_file(path, filename):
         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
-def rreplace(s, old, new, occurrence):
+def rreplace( s, old, new, occurrence ):
     li = s.rsplit(old, occurrence)
     return new.join(li)
 
 
 
-def MakeVue(name, path):
+def MakeVue( name, path ):
     with open(path, 'r') as file:
         html_doc = file.read()
 
@@ -52,7 +52,7 @@ template: `{ template }`
 
 
 
-def VueComponents( path, uid, templates ):
+def VueComponents( path, templates ):
     components = "\n\n".join([ MakeVue(name, str( path / 'app' / 'components' / file )) for name, file in templates.items() ])
     AblazeVue  = f"""
 const AblazeVue = {{}}
@@ -69,7 +69,7 @@ const Component = function ( name, scripts, template ) {{
 
 
 
-def VuePages( path, uid, pages ):
+def VuePages( path, pages ):
     vue_pages  = []
     vue_routes = []
     for p in pages:
@@ -124,7 +124,7 @@ def get_setup( html_doc ):
 @register_plugin
 class Vue:
     """docstring for VueTemplates."""
-    def __init__(self, file_path=None, project_path=None):
+    def __init__( self, file_path=None, project_path=None, uid=None ):
         templateLoader   = jinja2.FileSystemLoader(searchpath=f'{ file_path }')
         self.templateEnv = jinja2.Environment(loader=templateLoader, trim_blocks=True,
             block_start_string='@@', block_end_string='@@',
@@ -132,6 +132,7 @@ class Vue:
         )
         self.path        = file_path
         self.project     = project_path
+        self.uid         = uid
         self.components  = None
         self.pages       = None
         self.routes      = None
@@ -144,37 +145,41 @@ class Vue:
     def template( self, path ):
         return self.templateEnv.get_template( path )
 
-    def set_components( self, uid, components ):
-        self.components = VueComponents(self.path, uid, components)
+    def set_components( self, components ):
+        self.components = VueComponents(self.path, components)
 
-    def set_pages( self, uid, components ):
-        self.routes, self.pages = VuePages(self.path, uid, components)
+    def set_pages( self, pages ):
+        self.routes, self.pages = VuePages(self.path, pages)
 
-    def set_setup( self, uid=None, code=None ):
+    def set_setup( self, code=None ):
         text_index, text_script = get_setup( code )
 
-        js_file = str( self.project / 'static' / 'build' / f"setup-{ uid }.js" )
-        with open(js_file, 'w') as file:
-            file.write( str( minify( text_script ) ) )
-
+        js_file   = str( self.project / 'static' / 'build' / f"setup-{ self.uid }.js" )
         html_file = str( self.path / 'index.html' )
+        
+        print( text_script )
+        text_script = str( minify( text_script ) )
+
+        with open(js_file, 'w') as file:
+            file.write( text_script )
+
         with open(html_file, 'w') as file:
             file.write( str( text_index ) )
 
         return text_index
 
-    def set_vue( self, uid=None, components=None, pages=None ):
+    def set_vue( self, components=None, pages=None ):
         project = self.project
-        self.set_components(uid, components)
-        self.set_pages(uid, pages)
+        self.set_components( components )
+        self.set_pages( pages )
         _components = minify( self.components )
         _pages      = minify( self.pages )
         _routes     = self.routes
 
         JS_CODE     = "\n".join([ _components, _pages ])
         STATIC      = str( project / 'static' / 'build' )
-        PROJECT     = str( project / 'static' / 'build' / f'app-{ uid }.js' )
-        ROUTES      = str( project / 'static' / 'build' / f'routes-{ uid }.js' )
+        PROJECT     = str( project / 'static' / 'build' / f'app-{ self.uid }.js' )
+        ROUTES      = str( project / 'static' / 'build' / f'routes-{ self.uid }.js' )
 
         if not os.path.exists( STATIC ): os.makedirs( STATIC )
 

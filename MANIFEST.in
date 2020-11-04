@@ -7,11 +7,11 @@ include data/*
 include readme/*
 
 include static/*
-include static/vendors/*
-include static/vendors/ablaze/*
-include static/vendors/vuetify/*
-include static/vendors/avue/*
-include static/vendors/material/*
-include static/vendors/material/css/*
-include static/vendors/material/fonts/*
-include static/build/*
+include static\build/*
+include static\vendors/*
+include static\vendors\ablaze/*
+include static\vendors\avue/*
+include static\vendors\material/*
+include static\vendors\material\css/*
+include static\vendors\material\fonts/*
+include static\vendors\vuetify/*

@@ -1,7 +1,6 @@
 import json, pathlib
 import uuid
 
-ruid = lambda: str( uuid.uuid4() ).split('-')[0]
 
 from basics.blueprints import Vue
 
@@ -9,8 +8,8 @@ PROJECT = pathlib.Path(__file__).resolve().parents[2]
 PATH    = pathlib.Path(__file__).resolve().parents[0]
 
 
-vue         = Vue( file_path = PATH, project_path = PROJECT )
-UID         = ruid()
+UID         = str( uuid.uuid4() ).split('-')[0]
+vue         = Vue( file_path = PATH, project_path = PROJECT, uid = UID )
 CONFIG      = vue.load_config('app')
 VUEX        = vue.load_config('vuex')
 COMPONENTS  = vue.load_config('components')
@@ -28,8 +27,9 @@ TEMPLATE_SETUP = {
 }
 
 
-from sanic import Sanic
-from sanic import response
+
+from sanic import Sanic, response
+
 
 app = Sanic('frontend')
 app.static('/static', str(PROJECT / 'static'))
