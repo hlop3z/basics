@@ -271,6 +271,41 @@ AblazeVuex.install = function (Vue, options) {
   Vue.prototype.$timestamp = () => Math.round(new Date().getTime() / 1000);
 
   Vue.mixin({
+    computed: {
+      current_page : {
+        get: function () {
+          return this.routes[ this.$route.name ]
+        },
+        set: function (value) {
+          options.store.dispatch(`${ model }/value`, value)
+        }
+      }
+    },
+    beforeCreate(){
+      const sync = this.$options.sync
+      if(sync){
+        if(!this.$options.computed){
+          this.$options.computed = {}
+        }
+        const attrs = Object.keys(this.$attrs)
+        sync.forEach(key => {
+          if(!attrs.includes(key)){
+            Vue.util.warn(`Missing required sync-prop: "${key}"`, this)
+          }
+          this.$options.computed[key] = {
+            get(){
+              return this.$attrs[key]
+            },
+            set(val){
+              this.$emit('update:' + key, val)
+            }
+          }
+        })
+      }
+  }
+});
+
+  Vue.mixin({
     filters : $ablaze.vue.filters,
     computed: GLOBAL_KEY_VALUE,
     methods: {
@@ -304,7 +339,7 @@ AblazeVuex.install = function (Vue, options) {
           setTimeout(auto, delay)
       },
     }
-  })
+  });
 
 
 }

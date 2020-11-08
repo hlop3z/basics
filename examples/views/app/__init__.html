@@ -50,7 +50,11 @@
 
     var routes_names = {}
     routes.forEach((view) => {
-      routes_names[ view.name ] = { scroller: 0 }
+      routes_names[ view.name ] = {
+        scroller: 0,
+        left    : false,
+        right   : false,
+      }
     });
 
     Vue.use( AblazeVue );

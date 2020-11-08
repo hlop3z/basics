@@ -3,6 +3,7 @@
     name="users"
     crud="create"
     url="/json"
+    :payload.sync="payload.sales_orders.active"
     cors
   v-slot="{ form, submit, clean, reset }">
 
@@ -34,7 +35,7 @@
       name: "testing"
     }),
     computed: {},
-    mounted() {},
+    mounted() {  },
     methods: {},
   }
 </script>

@@ -1,12 +1,38 @@
 {
-  "api"           : {
+  "api" : {
     "core": "http://0.0.0.0:8085"
   },
-  
-  "globals"       : { 
-    "project": "ablaze" },
 
-  "forms"         : {
+  "globals" : {
+    "project": "ablaze"
+  },
+
+  "forms" : {
     "users":{ "name": null }
+  },
+
+
+  "payload" : {
+    "sales_orders": {
+      "crud"   : "create",
+      "active" : null,
+
+      "list"   : {
+        "page"   : 1,
+        "size"   : 25,
+        "sort"   : "id",
+        "fields" : [ '*' ],
+        "active" : [],
+      },
+      
+      "find"   : {
+        "page"   : 1,
+        "size"   : 25,
+        "sort"   : "id",
+        "fields" : [ '*' ],
+        "active" : [],
+      }
+    }
   }
+
 }

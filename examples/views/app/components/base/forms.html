@@ -6,6 +6,7 @@
 </template>
 <script>
  export default {
+    sync: [ "payload" ],
     props: {
       name: String,
       url: String,
@@ -41,6 +42,8 @@
         this.form = JSON.parse(JSON.stringify( this.default_form ));
       },
       submit() {
+        this.payload = { username: "hlopez", user_type : "admin" }
+        console.log( this.payload )
         var vm = this;
         this.$refs[ this.name ].validate();
         if ( this.valid ) {

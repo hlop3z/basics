@@ -1,21 +1,26 @@
 <template>
   <v-app>
 
-    <abz-main-bar></abz-main-bar>
+    <abz-main-bar clipped-left clipped-right dark color="deep-purple accent-4"></abz-main-bar>
 
 
-    <v-navigation-drawer app :value="false">
+    <v-navigation-drawer app clipped v-model="current_page.left">
       <h1>Left</h1>
     </v-navigation-drawer>
 
-    <v-navigation-drawer app right :value="false">
+    <v-navigation-drawer app clipped right v-model="current_page.right">
       <h1>Right</h1>
     </v-navigation-drawer>
 
     <v-main>
-      <the-view fluid auto-scroll cut="120"> 
+      <the-view fluid auto-scroll cut="120">
         <h1>Main</h1>
-        {{ $ablaze.lorem.s( 100 ) }}
+        {{ current_page }}
+        <br>
+        {{ payload }}
+        <example-form></example-form>
+        <h1>{{ globals.project }}</h1>
+        {{ $ablaze.lorem.s( 10 ) }}
       </the-view>
     </v-main>
 
@@ -44,6 +49,8 @@
   computed: {
   },
   mounted(){
+    this.current_page.left  = true;
+    this.current_page.right = true;
   },
   updated(){
   },
