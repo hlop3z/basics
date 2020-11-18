@@ -4,6 +4,18 @@ include CONFIG.json
 include requirements.txt
 
 include data/*
+include data/neutralinojs/*
+include data/neutralinojs/storage/*
+include data/neutralinojs/app/*
+include data/neutralinojs/app/assets/*
+include data/neutralinojs/app/assets/static/*
+include data/neutralinojs/app/assets/static/vendors/*
+include data/neutralinojs/app/assets/static/vendors/ablaze/*
+include data/neutralinojs/app/assets/static/vendors/avue/*
+include data/neutralinojs/app/assets/static/vendors/material/*
+include data/neutralinojs/app/assets/static/vendors/material/css/*
+include data/neutralinojs/app/assets/static/vendors/material/fonts/*
+include data/neutralinojs/app/assets/static/build/*
 include readme/*
 
 include static/*

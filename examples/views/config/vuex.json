@@ -11,27 +11,78 @@
     "users":{ "name": null }
   },
 
+  "editor" : {
+    "config"    : { "font": "20", "theme": "chaos", "active": "live" },
+    "live"      : { "lang" : "python", "uid" : null, "code" : "" },
+    "python"    : { "lang" : "python", "uid" : null, "code" : "" },
+    "javascript": { "lang" : "javascript", "uid" : null, "code" : "" },
+    "html"      : { "lang" : "html", "uid" : null, "code" : "" },
+    "langs" : [
+        "python",
+        "javascript",
+        "html",
+        "css",
+        "json",
+        "sh",
+        "mysql",
+        "pgsql",
+        "sql",
+        "batchfile",
+        "powershell",
+        "makefile",
+        "nginx",
+        "dockerfile",
+        "markdown",
+        "text"
+    ],
+    "themes": [
+     "ambiance",
+     "chaos",
+     "chrome",
+     "clouds",
+     "clouds_midnight",
+     "cobalt",
+     "crimson_editor",
+     "dawn",
+     "dracula",
+     "dreamweaver",
+     "eclipse",
+     "github",
+     "gob",
+     "gruvbox",
+     "idle_fingers",
+     "iplastic",
+     "katzenmilch",
+     "kr_theme",
+     "kuroir",
+     "merbivore",
+     "merbivore_soft",
+     "mono_industrial",
+     "monokai",
+     "nord_dark",
+     "pastel_on_dark",
+     "solarized_dark",
+     "solarized_light",
+     "sqlserver",
+     "terminal",
+     "textmate",
+     "tomorrow",
+     "tomorrow_night",
+     "tomorrow_night_blue",
+     "tomorrow_night_bright",
+     "tomorrow_night_eighties",
+     "twilight",
+     "vibrant_ink",
+     "xcode"
+   ]
+
+
+  },
 
   "payload" : {
     "sales_orders": {
       "crud"   : "create",
-      "active" : null,
-
-      "list"   : {
-        "page"   : 1,
-        "size"   : 25,
-        "sort"   : "id",
-        "fields" : [ '*' ],
-        "active" : [],
-      },
-      
-      "find"   : {
-        "page"   : 1,
-        "size"   : 25,
-        "sort"   : "id",
-        "fields" : [ '*' ],
-        "active" : [],
-      }
+      "active" : null
     }
   }
 

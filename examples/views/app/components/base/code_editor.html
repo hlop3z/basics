@@ -1,0 +1,97 @@
+<template>
+  <v-container
+    v-bind="$attrs"
+    class="fill-height"
+  >
+  <v-row
+    no-gutters
+    :style="{
+      height: screen.height - cut + 'px'
+    }"
+  >
+    <slot></slot>
+    <v-col cols=12 @keyup="$emit('save')" :id="ID">
+    </v-col>
+  </v-row>
+
+  </v-container>
+
+</template>
+
+<script>
+  export default {
+    sync:['lang', 'uid', 'code', 'font', 'theme'],
+    props: {
+      cut : { default: 290 }
+    },
+
+    data: () => ({
+      ID    : null,
+      editor: null,
+      theStyle:'',
+    }),
+
+    created() {
+      var ID   = this.random_id_name();
+      this.ID   = ID;
+      this.uid  = ID;
+    },
+
+    mounted () {
+      var self    = this;
+      this.registerAceEditor();
+      window.addEventListener("keyup", function(e) {
+        var code = self.editor.getValue();
+        self.code = code;
+        self.$emit('update:code', code)
+      }.bind(this));
+      this.theStyle = `width:100%; height:100%; overflow: hidden; margin-bottom:`;
+      this.editor.setValue( this.code );
+    },
+    computed:{
+    },
+
+    updated() {
+      //do something after updating vue instance
+      var element = document.getElementById( this.ID );
+      element.style.fontSize = (this.font+"px");
+      element.style.zIndex = 0;
+    },
+    watch:{
+      lang(val, old){
+        this.editor.getSession().setMode(`ace/mode/${ val }`);
+      },
+      font(val, old){
+        document.getElementById( this.uid ).style.fontSize = (val+"px");
+      },
+      theme(val, old){
+        this.editor.setTheme(`ace/theme/${ val }`);
+      },
+    },
+
+    methods: {
+      random_id_name(){
+        function random(size=32, choices="0123456789abcdefghijklmnopqrstuvwxyz") {
+          var text = "";
+          var possible = choices;
+          for (var i = 0; i < size; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+          return text;
+        };
+        return `${ this.lang }-${ random() }`;
+      },
+      registerAceEditor: function(){
+        var langTools = ace.require("ace/ext/language_tools");
+        this.editor   = ace.edit( this.ID );
+        this.editor.setTheme(`ace/theme/${ this.theme }`);
+        console.log( this.lang )
+        this.editor.getSession().setMode(`ace/mode/${ this.lang }`);
+        this.editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: false,
+            enableLiveAutocompletion: true,
+        });
+      },
+    },
+  }
+</script>

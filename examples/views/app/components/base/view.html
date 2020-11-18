@@ -6,10 +6,10 @@
     :style="{
       maxHeight: ( (screen.height - cut) + 'px' ),
       overflowX: 'hidden',
+      paddingBottom: '100px'
     }"
   >
     <slot></slot>
-    <div style="min-height: 250px"></div>
   </v-container>
 
 </template>
@@ -44,7 +44,7 @@
         setTimeout(autoScroll, 20)
     },
     onScroll(e){
-      this.scroller = e.target.scrollTop;
+      //this.scroller = e.target.scrollTop;
     }
   },
 }

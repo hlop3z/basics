@@ -14,13 +14,45 @@
 
     <v-main>
       <the-view fluid auto-scroll cut="120">
-        <h1>Main</h1>
-        {{ current_page }}
-        <br>
-        {{ payload }}
-        <example-form></example-form>
-        <h1>{{ globals.project }}</h1>
-        {{ $ablaze.lorem.s( 10 ) }}
+        <v-row>
+          <v-col cols=2>
+            <v-text-field
+              v-model="editor.config.font"
+              append-icon="mdi-minus"
+              prepend-icon="mdi-plus"
+              label="Font ( Px )"
+              hide-details="auto"
+              dense
+              @click:append="editor.config.font--"
+              @click:prepend="editor.config.font++"
+            ></v-text-field>
+          </v-col>
+          <v-col cols=5>
+            <v-autocomplete
+              v-model="editor.config.theme"
+              :items="editor.themes"
+              label="Theme"
+              dense
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols=4>
+            <v-autocomplete
+              v-model="editor.live.lang"
+              :items="editor.langs"
+              label="Language"
+              dense
+            ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <abz-dev
+          cut = "230"
+          :lang.sync="editor.live.lang"
+          :code.sync="editor.live.code"
+          :uid.sync="editor.live.uid"
+          :font.sync="editor.config.font"
+          :theme.sync="editor.config.theme"
+        ></abz-dev>
+
       </the-view>
     </v-main>
 

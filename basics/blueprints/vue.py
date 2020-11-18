@@ -156,9 +156,8 @@ class Vue:
 
         js_file   = str( self.project / 'static' / 'build' / f"setup-{ self.uid }.js" )
         html_file = str( self.path / 'index.html' )
-        
-        print( text_script )
-        text_script = str( minify( text_script ) )
+
+        text_script = str( text_script )
 
         with open(js_file, 'w') as file:
             file.write( text_script )
@@ -172,8 +171,8 @@ class Vue:
         project = self.project
         self.set_components( components )
         self.set_pages( pages )
-        _components = minify( self.components )
-        _pages      = minify( self.pages )
+        _components = self.components
+        _pages      = self.pages
         _routes     = self.routes
 
         JS_CODE     = "\n".join([ _components, _pages ])

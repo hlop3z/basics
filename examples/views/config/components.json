@@ -2,6 +2,7 @@
   "example-test"  : "base/__example__.html",
   "api-form"      : "base/forms.html",
   "the-view"      : "base/view.html",
+  "abz-dev"       : "base/code_editor.html",
 
   "abz-main-bar"  : "bars/default.html",
 
